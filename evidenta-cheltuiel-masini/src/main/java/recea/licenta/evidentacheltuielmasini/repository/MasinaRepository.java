@@ -15,4 +15,6 @@ public interface MasinaRepository  extends JpaRepository<Masina, Long> {
     @Query("SELECT m FROM Masina m WHERE m.user.username = :username")
     List<Masina> findByUsername(@Param("username") String username);
 
+    List<Masina> findAllByUserId(Long userId);
+
 }

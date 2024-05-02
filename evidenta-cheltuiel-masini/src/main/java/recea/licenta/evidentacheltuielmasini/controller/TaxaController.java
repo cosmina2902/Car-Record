@@ -4,9 +4,16 @@ import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import recea.licenta.evidentacheltuielmasini.dto.MasinaDto;
 import recea.licenta.evidentacheltuielmasini.dto.TaxeDto;
+import recea.licenta.evidentacheltuielmasini.enitity.Masina;
 import recea.licenta.evidentacheltuielmasini.enitity.Taxe;
+import recea.licenta.evidentacheltuielmasini.enitity.User;
+import recea.licenta.evidentacheltuielmasini.exception.MasiniApiException;
+import recea.licenta.evidentacheltuielmasini.repository.UserRepository;
 import recea.licenta.evidentacheltuielmasini.service.MasinaService;
 import recea.licenta.evidentacheltuielmasini.service.TaxaService;
 
@@ -22,35 +29,40 @@ public class TaxaController {
 
     private TaxaService taxaService;
     private MasinaService masinaService;
+    private UserRepository userRepository;
 
     @PostMapping
-    public ResponseEntity<TaxeDto> adaugareTaxa (@RequestBody TaxeDto taxeDto){
+    public ResponseEntity<TaxeDto> adaugareTaxa(@RequestBody TaxeDto taxeDto) {
+        User user = getCurrentUser();
+        MasinaDto masinaDto = masinaService.numarInmatriculare(taxeDto.getNumarInmatriculare());
+        if (masinaDto == null || !masinaDto.getIdUser().equals(user.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Nu aveți permisiunea să adăugați taxe pentru această mașină.");
+        }
 
         TaxeDto salvareTaxa = taxaService.adaugareTaxa(taxeDto);
-
         return new ResponseEntity<>(salvareTaxa, HttpStatus.CREATED);
     }
-    @GetMapping
-    public ResponseEntity<List<TaxeDto>> getTaxe (){
-        List<TaxeDto> taxe = taxaService.getTaxe();
 
+    @GetMapping
+    public ResponseEntity<List<TaxeDto>> getTaxe() {
+        User user = getCurrentUser();
+        List<TaxeDto> taxe = taxaService.getTaxeByUserId(user.getId());
         return ResponseEntity.ok(taxe);
     }
-    @GetMapping("/taxa/{id}")
-    public ResponseEntity<TaxeDto> gasireTaxaDupaId (@PathVariable Long id){
-        TaxeDto taxa = taxaService.getTaxaDupaId(id);
 
-        return ResponseEntity.ok(taxa);
-    }
     @PutMapping("/taxa/{id}")
-    public ResponseEntity<TaxeDto> updateTaxa (@PathVariable Long id, @RequestBody TaxeDto taxeDto){
-        TaxeDto taxa = taxaService.updateTaxa(id, taxeDto);
+    public ResponseEntity<TaxeDto> updateTaxa(@PathVariable Long id, @RequestBody TaxeDto taxeDto) {
+        verificareMasinaUser(id);
 
-        return ResponseEntity.ok(taxa);
+        TaxeDto taxaActualizata = taxaService.updateTaxa(id, taxeDto);
+        return ResponseEntity.ok(taxaActualizata);
     }
+
 
     @DeleteMapping("/taxa/{id}")
     public ResponseEntity<String> stergereTaxa(@PathVariable Long id){
+        verificareMasinaUser(id);
         String message = taxaService.stergereTaxa(id);
 
         return ResponseEntity.ok(message);
@@ -58,6 +70,13 @@ public class TaxaController {
 
     @GetMapping("/taxa/numarInmatriculare/{numarInmatriculare}")
     public ResponseEntity<List<TaxeDto>> getTaxePentruMasina(@PathVariable String numarInmatriculare){
+        User user = getCurrentUser();
+        MasinaDto masinaDto = masinaService.numarInmatriculare(numarInmatriculare);
+        if (masinaDto == null || !masinaDto.getIdUser().equals(user.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Nu aveți permisiunea să accesați taxele pentru această mașină.");
+        }
+
         List<TaxeDto> taxe = taxaService.getTaxeByNumarInmatriculare(numarInmatriculare);
 
         return ResponseEntity.ok(taxe);
@@ -67,6 +86,12 @@ public class TaxaController {
     public ResponseEntity<List<TaxeDto>> getTaxepentruLuna(@PathVariable String numarInmatriculare,
                                                            @PathVariable int an,
                                                            @PathVariable("luna") String lunaString){
+        User user = getCurrentUser();
+        MasinaDto masinaDto = masinaService.numarInmatriculare(numarInmatriculare);
+        if (masinaDto == null || !masinaDto.getIdUser().equals(user.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Nu aveți permisiunea să accesați taxele pentru această mașină.");
+        }
 
         Month luna = Month.of(Integer.parseInt(lunaString));
 
@@ -110,5 +135,25 @@ public class TaxaController {
         List<Taxe> taxe = taxaService.getTaxeExpirate(numarInamtriculare, dataCurenta);
         return ResponseEntity.ok(taxe);
     }
+    private User getCurrentUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new MasiniApiException(HttpStatus.NOT_FOUND, "Utilizatorul nu a fost găsit"));
+    }
+
+    private void verificareMasinaUser(Long id){
+        User user = getCurrentUser();
+        TaxeDto taxaExistenta = taxaService.getTaxaDupaId(id);
+        if (taxaExistenta == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Taxa specificată nu a fost găsită.");
+        }
+
+        MasinaDto masina = masinaService.numarInmatriculare(taxaExistenta.getNumarInmatriculare());
+        if (masina == null || !masina.getIdUser().equals(user.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Nu aveți permisiunea să stergeti această taxă.");
+        }
+    }
+
+
 
 }

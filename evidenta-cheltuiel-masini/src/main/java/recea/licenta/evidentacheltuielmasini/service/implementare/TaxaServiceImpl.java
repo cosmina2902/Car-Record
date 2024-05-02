@@ -19,6 +19,7 @@ import recea.licenta.evidentacheltuielmasini.service.TaxaService;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,7 @@ public class TaxaServiceImpl implements TaxaService {
 
         Taxe salvareTaxa = taxaRepository.save(taxa);
 
-        Masina masina = masinaRepository.findByNumarInmatriculare(taxa.getNumarInmatriculare());
+        Masina masina = masinaRepository.findByNumarInmatriculare(taxeDto.getNumarInmatriculare());
 
         Cheltuieli cheltuieli = new Cheltuieli();
         cheltuieli.setMasina(masina);
@@ -167,6 +168,17 @@ public class TaxaServiceImpl implements TaxaService {
     @Override
     public List<Taxe> getTaxeExpirate(String numarInmatriculare, LocalDate dataExpirare) {
         return taxaRepository.findByNumarInmatriculareAndDataExpirareBefore(numarInmatriculare, dataExpirare);
+    }
+
+    @Override
+    public List<TaxeDto> getTaxeByUserId(Long userId) {
+        List<Masina> masini = masinaRepository.findAllByUserId(userId);
+        List<TaxeDto> taxeFiltrate = new ArrayList<>();
+        for (Masina masina : masini) {
+            List<Taxe> taxe = taxaRepository.findByNumarInmatriculare(masina.getNumarInmatriculare());
+            taxeFiltrate.addAll(taxe.stream().map(t -> modelMapper.map(t, TaxeDto.class)).collect(Collectors.toList()));
+        }
+        return taxeFiltrate;
     }
 
 

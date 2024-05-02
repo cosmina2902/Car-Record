@@ -27,4 +27,5 @@ public interface TaxaService {
     Integer getToateCheltuieleMasina(String numarInmatriculare);
      List<Taxe> getTaxeByCategorieId(Long categorieId, String numarInmatricuare);
      List<Taxe> getTaxeExpirate(String numarInmatriculare, LocalDate dataExpirare);
+    List<TaxeDto> getTaxeByUserId(Long userId);
 }
