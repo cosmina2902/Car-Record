@@ -17,8 +17,9 @@ public class Masina {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_masina")
     private Long idMasina;
-    @Column(name = "id_user")
-    private Long idUser;
+    @ManyToOne
+    @JoinColumn(name = "id_user")
+    private User user;
     @Column(nullable = false)
     private String marca;
     private String model;

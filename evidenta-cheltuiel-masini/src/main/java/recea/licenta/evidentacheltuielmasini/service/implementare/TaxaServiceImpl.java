@@ -159,4 +159,15 @@ public class TaxaServiceImpl implements TaxaService {
 
     }
 
+    @Override
+    public List<Taxe> getTaxeByCategorieId(Long categorieId, String numarInmatricuare) {
+        return taxaRepository.findByCategorieCheltuieliIdAndNumarInmatriculare(categorieId, numarInmatricuare);
+    }
+
+    @Override
+    public List<Taxe> getTaxeExpirate(String numarInmatriculare, LocalDate dataExpirare) {
+        return taxaRepository.findByNumarInmatriculareAndDataExpirareBefore(numarInmatriculare, dataExpirare);
+    }
+
+
 }

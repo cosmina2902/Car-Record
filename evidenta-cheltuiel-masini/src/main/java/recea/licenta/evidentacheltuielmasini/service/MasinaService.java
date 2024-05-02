@@ -1,6 +1,7 @@
 package recea.licenta.evidentacheltuielmasini.service;
 
 import recea.licenta.evidentacheltuielmasini.dto.MasinaDto;
+import recea.licenta.evidentacheltuielmasini.enitity.Masina;
 
 import java.util.List;
 
@@ -15,5 +16,7 @@ public interface MasinaService {
 
     String stergereMasina(Long id);
 
-    Long numarInmatriculare(String nrInmatriculare);
+    MasinaDto numarInmatriculare(String nrInmatriculare);
+
+    List<MasinaDto> getMasiniDupaUser(String username);
 }

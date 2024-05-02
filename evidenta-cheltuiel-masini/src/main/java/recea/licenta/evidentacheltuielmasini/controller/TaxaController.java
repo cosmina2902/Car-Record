@@ -98,4 +98,17 @@ public class TaxaController {
         return ResponseEntity.ok(message);
     }
 
+    @GetMapping("/taxa/categorie/{categorieId}/{numarInamtriculare}")
+    public ResponseEntity<List<Taxe>> getTaxeByCategorieId(@PathVariable long categorieId,
+                                                           @PathVariable String numarInamtriculare) {
+        List<Taxe> taxe = taxaService.getTaxeByCategorieId(categorieId, numarInamtriculare);
+        return ResponseEntity.ok(taxe);
+    }
+    @GetMapping("/expirate/{numarInamtriculare}")
+    public ResponseEntity<List<Taxe>> getTaxeExpirate(@PathVariable String numarInamtriculare) {
+        LocalDate dataCurenta = LocalDate.now();
+        List<Taxe> taxe = taxaService.getTaxeExpirate(numarInamtriculare, dataCurenta);
+        return ResponseEntity.ok(taxe);
+    }
+
 }

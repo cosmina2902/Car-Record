@@ -19,4 +19,6 @@ public interface TaxaRepository extends JpaRepository<Taxe, Long> {
                                                       @Param("startDate") LocalDate startDate,
                                                       @Param("endDate") LocalDate endDate);
 
+    List<Taxe> findByCategorieCheltuieliIdAndNumarInmatriculare(Long categorieId, String numarInmatriculare);
+    List<Taxe> findByNumarInmatriculareAndDataExpirareBefore(String numarInamtriculare, LocalDate dataExpirare);
 }

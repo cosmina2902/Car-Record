@@ -2,11 +2,14 @@ package recea.licenta.evidentacheltuielmasini.service.implementare;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import recea.licenta.evidentacheltuielmasini.dto.MasinaDto;
 import recea.licenta.evidentacheltuielmasini.enitity.Masina;
+import recea.licenta.evidentacheltuielmasini.enitity.User;
 import recea.licenta.evidentacheltuielmasini.exception.ResourceNotFound;
 import recea.licenta.evidentacheltuielmasini.repository.MasinaRepository;
+import recea.licenta.evidentacheltuielmasini.repository.UserRepository;
 import recea.licenta.evidentacheltuielmasini.service.MasinaService;
 
 import java.util.List;
@@ -17,7 +20,9 @@ import java.util.stream.Collectors;
 
 public class MasinaServiceImpl implements MasinaService {
 
-    MasinaRepository masinaRepository;
+    private MasinaRepository masinaRepository;
+
+    private UserRepository userRepository;
 
     private ModelMapper modelMapper;
 
@@ -79,9 +84,22 @@ public class MasinaServiceImpl implements MasinaService {
     }
 
     @Override
-    public Long numarInmatriculare(String nrInmatriculare) {
-        Long id = masinaRepository.findByNumarInmatriculare(nrInmatriculare).getIdMasina();
+    public MasinaDto numarInmatriculare(String nrInmatriculare) {
+        Masina masina = masinaRepository.findByNumarInmatriculare(nrInmatriculare);
 
-        return id;
+        return modelMapper.map(masina, MasinaDto.class);
     }
+
+    @Override
+    public List<MasinaDto> getMasiniDupaUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFound("Utilizatorul nu a fost gasit"));
+
+        List<Masina> userMasini = masinaRepository.findByUserId(user.getId());
+
+        return userMasini.stream()
+                .map(masina -> modelMapper.map(masina, MasinaDto.class))
+                .collect(Collectors.toList());
+    }
+
 }
