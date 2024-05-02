@@ -28,4 +28,5 @@ public interface TaxaService {
      List<Taxe> getTaxeByCategorieId(Long categorieId, String numarInmatricuare);
      List<Taxe> getTaxeExpirate(String numarInmatriculare, LocalDate dataExpirare);
     List<TaxeDto> getTaxeByUserId(Long userId);
+    List<Taxe> findTaxesThatWillExpireSoon(int daysInAdvance);
 }

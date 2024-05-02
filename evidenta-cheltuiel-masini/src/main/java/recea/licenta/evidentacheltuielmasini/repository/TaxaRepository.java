@@ -21,4 +21,5 @@ public interface TaxaRepository extends JpaRepository<Taxe, Long> {
 
     List<Taxe> findByCategorieCheltuieliIdAndNumarInmatriculare(Long categorieId, String numarInmatriculare);
     List<Taxe> findByNumarInmatriculareAndDataExpirareBefore(String numarInamtriculare, LocalDate dataExpirare);
+    List<Taxe> findByDataExpirareBetween(LocalDate start, LocalDate end);
 }

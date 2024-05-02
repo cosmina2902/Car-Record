@@ -181,5 +181,12 @@ public class TaxaServiceImpl implements TaxaService {
         return taxeFiltrate;
     }
 
+    @Override
+    public List<Taxe> findTaxesThatWillExpireSoon(int daysInAdvance) {
+        LocalDate today = LocalDate.now();
+        LocalDate notificationDate = today.plusDays(daysInAdvance);
+        return taxaRepository.findByDataExpirareBetween(today, notificationDate);
+    }
+
 
 }
