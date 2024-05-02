@@ -133,5 +133,30 @@ public class TaxaServiceImpl implements TaxaService {
 
     }
 
+    @Override
+    public List<TaxeDto> getCheltuieliPentruMasinaInPerioada(String numarInmatriculare, LocalDate startDate, LocalDate endDate) {
+        List<Taxe> taxeList = taxaRepository.findByNumarInmatriculare(numarInmatriculare);
+
+        List<Taxe> taxeInPerioada = taxeList.stream()
+                .filter(taxe -> !taxe.getData().isBefore(startDate) && !taxe.getData().isAfter(endDate))
+                .collect(Collectors.toList());
+
+        return taxeInPerioada.stream()
+                .map(taxe -> modelMapper.map(taxe, TaxeDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Integer getToateCheltuieleMasina(String numarInmatriculare) {
+        List<Taxe> taxeList = taxaRepository.findByNumarInmatriculare(numarInmatriculare);
+
+        int sumaTotala = 0;
+        for (Taxe taxa: taxeList){
+            sumaTotala += taxa.getSuma();
+        }
+
+        return sumaTotala;
+
+    }
 
 }

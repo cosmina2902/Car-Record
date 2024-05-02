@@ -1,6 +1,7 @@
 package recea.licenta.evidentacheltuielmasini.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,13 +10,14 @@ import recea.licenta.evidentacheltuielmasini.enitity.Taxe;
 import recea.licenta.evidentacheltuielmasini.service.MasinaService;
 import recea.licenta.evidentacheltuielmasini.service.TaxaService;
 
+import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 
 @RestController
 @RequestMapping("/masini/taxe")
 @AllArgsConstructor
-@CrossOrigin
+//@CrossOrigin
 public class TaxaController {
 
     private TaxaService taxaService;
@@ -78,4 +80,22 @@ public class TaxaController {
         List<TaxeDto> taxe = taxaService.getByNumarInmatriculareAndAn(numarInmatriculare, an);
         return ResponseEntity.ok(taxe);
     }
+    @GetMapping("/taxa/numarInmatriculare/{numarInmatriculare}/perioada/{startDate}/endDate/{endDate}")
+    public ResponseEntity<List<TaxeDto>> getTaxePentruPerioada(@PathVariable String numarInmatriculare,
+                                                               @PathVariable LocalDate startDate,
+                                                               @PathVariable LocalDate endDate) {
+        System.out.println(startDate);
+
+        List<TaxeDto> taxe = taxaService.getCheltuieliPentruMasinaInPerioada(numarInmatriculare, startDate, endDate);
+        return ResponseEntity.ok(taxe);
+    }
+
+    @GetMapping("/taxa/numarInmatriculare/{numarInmatriculare}/sumaTotala")
+    ResponseEntity<String> getSumaTotalaMasina (@PathVariable String numarInmatriculare){
+        int suma_totala = taxaService.getToateCheltuieleMasina(numarInmatriculare);
+        String message =
+                "Pentru masina cu nr inamtriculare " + numarInmatriculare + " s-a cheltuit suma de "+suma_totala;
+        return ResponseEntity.ok(message);
+    }
+
 }

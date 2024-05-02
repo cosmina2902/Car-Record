@@ -2,6 +2,7 @@ package recea.licenta.evidentacheltuielmasini.service;
 
 import recea.licenta.evidentacheltuielmasini.dto.TaxeDto;
 
+import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 
@@ -20,4 +21,7 @@ public interface TaxaService {
     List<TaxeDto> getTaxeByNumarInmatriculare (String numarInmatriculare);
     List<TaxeDto> getCheltuieliPentruMasinaInLuna(String numarInmatriculare, int year, Month month);
     List<TaxeDto> getByNumarInmatriculareAndAn(String numarInmatriculare, int an);
+    List<TaxeDto> getCheltuieliPentruMasinaInPerioada(String numarInmatriculare, LocalDate startDate, LocalDate endDate);
+
+    Integer getToateCheltuieleMasina(String numarInmatriculare);
 }
