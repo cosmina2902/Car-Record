@@ -1,0 +1,26 @@
+.login {
+    min-height: 100vh;
+  }
+  
+  .bg-image {
+    background-color: #f8f9fa; /* culoarea de fundal */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .container-img {
+    max-width: 80%; /* ajustează lățimea imaginii la nevoie */
+    max-height: 80vh; /* ajustează înălțimea imaginii la nevoie */
+  }
+  
+  .login-heading {
+    font-weight: 300;
+  }
+  
+  .btn-login {
+    font-size: 0.9rem;
+    letter-spacing: 0.05rem;
+    padding: 0.75rem 1rem;
+  }
+  

@@ -1,0 +1,22 @@
+.container {
+    margin-top: 50px;
+}
+
+.login-heading {
+    font-size: 2.5rem;
+    font-weight: 500;
+}
+
+.form-floating {
+    margin-bottom: 1.5rem;
+}
+
+.btn-login {
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .col-md-8 {
+        max-width: 600px;
+    }
+}

@@ -38,7 +38,8 @@ public class TaxeNotificareCalendar {
                 User user = userRepository.findById(masinaDto.getIdUser()).orElse(null);
                 if (user != null) {
                     String subject = "Expirare taxă în " + daysInAdvance + " zile";
-                    String body = "Taxa de tipul " + tax.getTip() + " pentru " + tax.getNumarInmatriculare() + " va expira pe " + tax.getDataExpirare() + ".";
+                    String body = "Taxa de tipul " + tax.getTip() + " pentru " +
+                            tax.getNumarInmatriculare() + " va expira pe " + tax.getDataExpirare() + ".";
                     System.out.println(("Sending email to: " + user.getEmail()));
                     emailSenderService.sendEmail(user.getEmail(), subject, body);
                 } else {
