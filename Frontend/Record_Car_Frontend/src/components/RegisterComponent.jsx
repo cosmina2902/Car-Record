@@ -37,8 +37,8 @@ const RegisterComponent = () => {
     }
 
     return (
-        <div className="container">
-            <div className="row">
+        <div className="container mb-4 mt-4">
+            <div className="row mx-auto">
                 <div className="col-md-5 mx-auto">
                     <h3 className="login-heading mb-4 text-center">Register</h3>
                     <form>

@@ -19,14 +19,26 @@ const AdaugareMasinaComponent = () => {
 
     const handleImageChange = (e) => {
         const imageFile = e.target.files[0];
-        setFormData({ ...formData, imagine: imageFile });
+        const extension = imageFile.name.split('.').pop().toLowerCase();
+        if (extension === 'jpg' || extension === 'jpeg' || extension === 'png') {
+            setFormData({ ...formData, imagine: imageFile });
+        } else {
+            alert('Formatul de imagine nu este acceptat. Vă rugăm să alegeți un fișier .jpg sau .png.');
+        }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Aici poți să trimiti datele către backend pentru a le salva în baza de date și pentru a încărca imaginea
+       
         console.log(formData);
-        // Resetează formularul după trimitere
+        
+        if (formData.imagine) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                localStorage.setItem('imagine', event.target.result);
+            };
+            reader.readAsDataURL(formData.imagine);
+        }
         setFormData({
             an: '',
             capacitate: '',
@@ -39,11 +51,11 @@ const AdaugareMasinaComponent = () => {
     };
 
     return (
-        <div className="container mb-5 mt-5">
+        <div className="container-pers mb-5 mt-5">
             <h2>Adăugare Mașină</h2>
-            <form onSubmit={handleSubmit}>
+            <form className='form-floating mb-3' onSubmit={handleSubmit}>
                 <div className="mb-3">
-                    <label>An:</label>
+                    <label htmlFor='an'>An:</label>
                     <input type="text" name="an" value={formData.an} onChange={handleChange}
                     placeholder='Introduceti anul fabricatiei' className='form-control'/>
                 </div>

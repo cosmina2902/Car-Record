@@ -10,8 +10,8 @@
   }
   
   .container-img {
-    max-width: 80%; /* ajustează lățimea imaginii la nevoie */
-    max-height: 80vh; /* ajustează înălțimea imaginii la nevoie */
+    max-width: 80%; 
+    max-height: 80vh;
   }
   
   .login-heading {

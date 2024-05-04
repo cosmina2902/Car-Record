@@ -50,7 +50,8 @@ const HeaderCompnent = () => {
                   </NavDropdown.Item>
                 </NavDropdown>
               </Nav>
-              <div className="d-flex">
+             
+              <div>
                 {
                   !isAuth && <Button variant="primary" className="me-2" onClick={goToLogin}>Login</Button>
                 }

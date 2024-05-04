@@ -41,7 +41,7 @@ const HomePageComponent = () => {
     return (
         <>
             <div className="jumbotron text-center">
-                <div className="container">
+                <div className=''>
                     <h1>Vizualizare Masini</h1>
                     <p className="lead text-muted">Aici este locul unde îți poți viziona mașinile adăugate. Enjoy your time</p>
                     <p>
