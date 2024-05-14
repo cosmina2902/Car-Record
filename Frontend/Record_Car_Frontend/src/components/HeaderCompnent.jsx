@@ -33,13 +33,17 @@ const HeaderCompnent = () => {
             <Navbar.Brand className='me-3' href="#"><FontAwesomeIcon icon={faCar} /> Car Record</Navbar.Brand>
             <Navbar.Toggle aria-controls="navbarScroll" />
             <Navbar.Collapse id="navbarScroll">
+              
               <Nav
                 className="me-auto my-2 my-lg-0"
                 style={{ maxHeight: '100px' }}
                 navbarScroll
               >
-                <Nav.Link href="/home">Home</Nav.Link>
-                <NavDropdown title="Taxe" id="navbarScrollingDropdown">
+                {
+                  isAuth && <Nav.Link href="/home">Home</Nav.Link>
+                }
+                {
+                  isAuth && <NavDropdown title="Taxe" id="navbarScrollingDropdown">
                   <NavDropdown.Item href="#action3">Taxe</NavDropdown.Item>
                   <NavDropdown.Item href="#action4">
                     Another action
@@ -49,6 +53,9 @@ const HeaderCompnent = () => {
                     Something else here
                   </NavDropdown.Item>
                 </NavDropdown>
+                }
+                
+                
               </Nav>
              
               <div>

@@ -8,6 +8,8 @@ import RegisterComponent from './components/RegisterComponent'
 import { MasinaComponent } from './components/MasinaComponent'
 import AdaugareMasinaComponent from './components/AdaugareMasinaComponent'
 import { isUserLoggedIn } from './service/AuthSerive'
+import ListCheltuieliComponent from './components/ListCheltuieliComponent'
+import BasicFilterDemo from './components/BasicFilterDemo'
 
 
 function App() {
@@ -42,6 +44,11 @@ function App() {
             <Route path='/add-masina' element={
               <AuthenticatedRoute>
                   <AdaugareMasinaComponent/>
+              </AuthenticatedRoute>
+            }></Route>
+            <Route path='/cheltuieli' element={
+              <AuthenticatedRoute>
+                  <BasicFilterDemo/>
               </AuthenticatedRoute>
             }></Route>
             

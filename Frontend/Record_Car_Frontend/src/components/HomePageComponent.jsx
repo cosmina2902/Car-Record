@@ -38,6 +38,9 @@ const HomePageComponent = () => {
     function vizualizareDetaliiMasina(id){
         navigator(`/masina/${id}`);
     }
+    function goToCheltuieli(){
+        navigator('/cheltuieli')
+    }
     return (
         <>
             <div className="jumbotron text-center">
@@ -50,12 +53,12 @@ const HomePageComponent = () => {
                 </div>
             </div>
 
-            <div className="album py-5 bg-light">
+            <div className="album mb-4 py-1 bg-light">
                 <div className="container">
                     <div className="row">
                         {masini.map((masina) => (
                             <div className="col-md-4" key={masina.id_masina}>
-                                <div className="card mb-4 box-shadow">
+                                <div className="card mb-2 box-shadow">
                                     <img className="card-img-top" src={masina.imagine} alt={`Imagine ${masina.marca} ${masina.model}`} />
 
                                     <div className="card-body">
@@ -64,7 +67,7 @@ const HomePageComponent = () => {
                                             <div className="btn-group">
                                                 <button type="button" className="btn btn-sm btn-outline-secondary" 
                                                 onClick={()=> vizualizareDetaliiMasina(masina.id_masina) }>Detalii</button>
-                                                <button type="button" className="btn btn-sm btn-outline-secondary">Cheltuieli</button>
+                                                <button type="button" className="btn btn-sm btn-outline-secondary" onClick={goToCheltuieli}>Cheltuieli</button>
                                             </div>
                                         </div>
                                     </div>

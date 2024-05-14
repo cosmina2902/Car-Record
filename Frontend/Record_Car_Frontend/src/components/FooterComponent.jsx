@@ -6,22 +6,22 @@ import { faEnvelope, faLocationDot, faPhone } from '@fortawesome/free-solid-svg-
 const FooterComponent = () => {
     return (
         <div>
-            <footer class="footer-distributed">
+            <footer className="footer-distributed">
 
-<div class="footer-left">
+<div className="footer-left">
 
   <h3>Car<span>Record</span></h3>
 
-  <p class="footer-links">
-    <a href="#" class="link-1">Home</a>
+  <p className="footer-links">
+    <a href="#" className="link-1">Home</a>
     
     <a href="#">Contact</a>
   </p>
 
-  <p class="footer-company-name">Car Record © 2024</p>
+  <p className="footer-company-name">Car Record © 2024</p>
 </div>
 
-<div class="footer-center">
+<div className="footer-center">
 
   <div>
     <p><span><FontAwesomeIcon icon={faLocationDot} /> Timisoara, Romania</span><FontAwesomeIcon icon={faLocationDot} /> Piața Victoriei 2, Timișoara 300006</p>
@@ -37,14 +37,14 @@ const FooterComponent = () => {
 
 </div>
 
-<div class="footer-right">
+<div className="footer-right">
 
-  <p class="footer-company-about">
+  <p className="footer-company-about">
     <span>Despre Aplicatie</span>
     Aplicatie pentru gestionarea cheltuielilor unei masini. Stim ca este greu sa tinem cont de cat cheltuiti cu masina dumneavoastra asa ca noi am venit in ajutor cu o aplicatia user friendly pentru a putea avea o evidenta exacta a fiecarei plati a masini tale 😄.
   </p>
 
-  <div class="footer-icons">
+  <div className="footer-icons">
 
    
   </div>

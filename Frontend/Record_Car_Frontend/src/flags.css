@@ -1,0 +1,67 @@
+span.flag {
+    width: 44px;
+    height: 30px;
+    display: inline-block;
+}
+img.flag {
+    width: 30px;
+}
+.flag {
+    background: url(https://primefaces.org/cdn/primereact/images/flag/flags_responsive.png)
+        no-repeat;
+    background-size: 100%;
+    vertical-align: middle;
+}
+
+.card {
+    background: var(--surface-card);
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
+}
+
+.p-paginator .p-paginator-prev,
+.p-paginator .p-paginator-next,
+.p-paginator .p-paginator-first,
+.p-paginator .p-paginator-last {
+    background-color: transparent; 
+    border: none; 
+    color: gray; 
+    margin: 0 5px; 
+}
+
+
+.p-paginator .p-paginator-current {
+    color: white; 
+    border-radius: 20px; 
+    padding: 0.5rem 1rem; 
+    border: none; 
+}
+
+
+.p-paginator .p-paginator-pages .p-paginator-page {
+    background-color: transparent;
+    border: none; 
+    color: gray; 
+    margin: 0 5px; 
+    border-radius: 50%; 
+    padding: 0.5rem 0.75rem; 
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page:not(.p-highlight):hover {
+    background-color: #e9ecef; 
+    color: #007bff; 
+    cursor: pointer; 
+}
+
+
+.p-datatable .p-datatable-tbody > tr > td {
+    vertical-align: middle; 
+}
+
+
+.p-paginator {
+    margin-top: 1rem; 
+}

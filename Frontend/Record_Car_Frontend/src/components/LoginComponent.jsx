@@ -27,39 +27,39 @@ function goToHomePage(e){
 }
 
   return (
-    <div class="container-fluid ps-md-0">
-        <div class="row g-0">
-        <div class="d-none d-md-flex col-md-4 col-lg-6 bg-image">
+    <div className="container-fluid ps-md-0">
+        <div className="row g-0">
+        <div className="d-none d-md-flex col-md-4 col-lg-6 bg-image">
             <div className='container container-img'>
             <img src='https://www.searchenginejournal.com/wp-content/uploads/2020/02/c67d31ea-9900-4627-bad6-948dfc091060-5e431be45447e.jpeg' alt="Imaginea" className="img-fluid" />
             </div>
         </div>
-        <div class="col-md-8 col-lg-6">
-            <div class="login d-flex align-items-center py-5">
-                <div class="container">
-                    <div class="row">
+        <div className="col-md-8 col-lg-6">
+            <div className="login d-flex align-items-center py-5">
+                <div className="container">
+                    <div className="row">
                    
-                        <div class="col-md-9 col-lg-8 mx-auto">
+                        <div className="col-md-9 col-lg-8 mx-auto">
                         {error && <Alert key='danger' variant='danger'>{error}</Alert>} 
-                            <h3 class="login-heading mb-4">Welcome back!</h3>
+                            <h3 className="login-heading mb-4">Welcome back!</h3>
                             <form>
-                <div class="form-floating mb-3">
-                  <input type="email" class="form-control" id="floatingInput" 
+                <div className="form-floating mb-3">
+                  <input type="email" className="form-control" id="floatingInput" 
                   placeholder="name@example.com" value={username} name='username'
                   onChange={(e) => setUsername(e.target.value)}/>
-                  <label for="floatingInput">Email address</label>
+                  <label htmlFor="floatingInput">Email address</label>
                 </div>
-                <div class="form-floating mb-3">
-                  <input type="password" class="form-control" id="floatingPassword" placeholder="Password"
+                <div className="form-floating mb-3">
+                  <input type="password" className="form-control" id="floatingPassword" placeholder="Password"
                   value={password} name='password' onChange={(e)=>setPassword(e.target.value)}/>
-                  <label for="floatingPassword">Password</label>
+                  <label htmlFor="floatingPassword">Password</label>
                 </div>
 
 
-                <div class="d-grid">
-                  <button class="btn btn-lg btn-primary btn-login text-uppercase fw-bold mb-2" type="submit" onClick={(e) => goToHomePage(e)}>Sign in</button>
-                  <div class="text-center">
-                    <a class="small" href="#">Forgot password?</a>
+                <div className="d-grid">
+                  <button className="btn btn-lg btn-primary btn-login text-uppercase fw-bold mb-2" type="submit" onClick={(e) => goToHomePage(e)}>Sign in</button>
+                  <div className="text-center">
+                    <a className="small" href="#">Forgot password?</a>
                   </div>
                 </div>
 
