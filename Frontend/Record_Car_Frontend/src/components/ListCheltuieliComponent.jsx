@@ -1,74 +1,125 @@
-import React, { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Importăm CSS-ul Bootstrap
+import React, { useState, useEffect } from 'react';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { Dropdown } from 'primereact/dropdown';
+import { Tag } from 'primereact/tag';
+import { FilterMatchMode } from 'primereact/api';
+import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
+import { TriStateCheckbox } from 'primereact/tristatecheckbox';
+import classNames from 'classnames';
+import { useNavigate } from 'react-router-dom';
 
-const initialData = [
-  { id: 1, name: 'Chirie', amount: 1500 },
-  { id: 2, name: 'Mâncare', amount: 200 },
-  { id: 3, name: 'Utilități', amount: 300 },
-  { id: 4, name: 'Transport', amount: 100 },
-  { id: 5, name: 'Hobby', amount: 50 },
-];
+export default function ListCheltuieliComponent() {
+    const [expenses, setExpenses] = useState([
+        { id_taxa: '1', data: '2024-04-01', data_expirare: '2025-04-01', suma: '234', tip: 'schimb', id_categorie_cheltuieli: '1' },
+        { id_taxa: '8', data: '2024-05-01', data_expirare: '2024-05-01', suma: '350', tip: 'alimentare', id_categorie_cheltuieli: '2' },
+        { id_taxa: '10', data: '2024-04-01', data_expirare: '2024-04-01', suma: '234', tip: 'schimb', id_categorie_cheltuieli: '3' },
+        { id_taxa: '11', data: '2024-05-01', data_expirare: '2024-04-01', suma: '234', tip: 'schimb', id_categorie_cheltuieli: '3' },
+        { id_taxa: '1', data: '2024-04-01', data_expirare: '2025-04-01', suma: '234', tip: 'schimb', id_categorie_cheltuieli: '1' },
+        { id_taxa: '8', data: '2024-05-01', data_expirare: '2025-04-01', suma: '350', tip: 'alimentare', id_categorie_cheltuieli: '2' }
+    ]);
 
-const ListCheltuieliComponent = () => {
-  const [data, setData] = useState(initialData);
-  const [sortedField, setSortedField] = useState(null);
-  const [sortDirection, setSortDirection] = useState('asc');
-  const [filter, setFilter] = useState('');
-  
-  const sortData = (field) => {
-    const direction = sortedField === field && sortDirection === 'asc' ? 'desc' : 'asc';
-    const sortedData = [...data].sort((a, b) => {
-      if (a[field] < b[field]) return direction === 'asc' ? -1 : 1;
-      if (a[field] > b[field]) return direction === 'asc' ? 1 : -1;
-      return 0;
+    const navigator = useNavigate();
+
+    useEffect(() => {
+        const updatedExpenses = expenses.map(expense => ({
+            ...expense,
+            expired: new Date(expense.data_expirare) <= new Date()
+        }));
+        setExpenses(updatedExpenses);
+    }, []);
+
+    const [filters, setFilters] = useState({
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        id_categorie_cheltuieli: { value: null, matchMode: FilterMatchMode.EQUALS },
+        expired: { value: null, matchMode: FilterMatchMode.EQUALS }
     });
-    setSortedField(field);
-    setSortDirection(direction);
-    setData(sortedData);
-  };
 
-  const filterData = (event) => {
-    const keyword = event.target.value.toLowerCase();
-    const filteredData = initialData.filter(item => {
-      return Object.values(item).some(value =>
-        value.toString().toLowerCase().includes(keyword)
-      );
-    });
-    setFilter(keyword);
-    setData(filteredData.length ? filteredData : initialData); // Resetăm datele la valorile inițiale dacă filtrul este gol
-  };
+    const categorii = [
+        { label: 'CHELTUIELI_CU_TAXA', value: '1', severity: 'danger' },
+        { label: 'CHELTUIELI_CU_COMBUSTIBIL', value: '2', severity: 'success' },
+        { label: 'CHELTUIELI_CU_CAUCIUCURI', value: '3', severity: 'info' },
+        { label: 'CHELTUIELI_CU_BATERIA', value: '4', severity: 'warning' },
+        { label: 'CHELTUIELI_CU_SERVICE', value: '5', severity: null }
+    ];
 
-  return (
-    <div className="container">
-      <input
-        type="text"
-        className="form-control mb-2"
-        placeholder="Caută..."
-        value={filter}
-        onChange={filterData}
-      />
-      <table className="table">
-        <thead>
-          <tr>
-            <th onClick={() => sortData('name')}>
-              Nume {sortedField === 'name' && (sortDirection === 'asc' ? '▲' : '▼')}
-            </th>
-            <th onClick={() => sortData('amount')}>
-              Sumă {sortedField === 'amount' && (sortDirection === 'asc' ? '▲' : '▼')}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item, index) => (
-            <tr key={index}>
-              <td>{item.name}</td>
-              <td>{item.amount}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-};
+    const categoryTemplate = (rowData) => {
+        const category = categorii.find(c => c.value === rowData.id_categorie_cheltuieli);
+        return category ? <Tag value={category.label} severity={category.severity} /> : "Necunoscut";
+    };
 
-export default ListCheltuieliComponent;
+    const categoryOptionTemplate = (option) => {
+        return <Tag value={option.label} severity={option.severity} />;
+    };
+
+    const statusRowFilterTemplate = (options) => {
+        return (
+            <Dropdown value={options.value} options={categorii} onChange={(e) => options.filterApplyCallback(e.value)}
+                itemTemplate={categoryOptionTemplate} placeholder="Alegeti categoria" className="p-column-filter"
+                showClear style={{ minWidth: '8rem', fontSize: '12px' }} />
+        );
+    };
+
+    const handleDelete = (rowData) => {
+        setExpenses(expenses.filter(expense => expense.id_taxa !== rowData.id_taxa));
+    };
+
+    const handleEdit = (rowData) => {
+        console.log('Editare:', rowData);
+    };
+
+    const actionBodyTemplate = (rowData) => {
+        return (
+            <div className="actions">
+                <Button icon="pi pi-pencil" className="p-button-rounded p-button-text p-mr-2 custom-button" onClick={() => handleEdit(rowData)} />
+                <Button icon="pi pi-trash" className="p-button-rounded p-button-text custom-button" onClick={() => handleDelete(rowData)} />
+            </div>
+        );
+    };
+
+    const expiredBodyTemplate = (rowData) => {
+        return <i className={classNames('pi', { 'pi-check-circle': rowData.expired, 'pi-times-circle': !rowData.expired })}></i>;
+    };
+
+    const expiredRowFilterTemplate = (options) => {
+        return (
+            <TriStateCheckbox value={options.value} onChange={(e) => options.filterApplyCallback(e.value)} />
+        );
+    };
+
+    function goToAddCheltuieli(){
+        navigator('/add-cheltuieli')
+    }
+
+    return (
+        <>
+            <br /><br />
+            <div className="text-center">
+                <h2>Cheltuieli pentru masina x</h2>
+            </div>
+            <br />
+
+            <div className="card-pers">
+                <div className="text-right justify-content-end mb-3">
+                    <Button className="btn btn-outline-dark" onClick={goToAddCheltuieli}>Adauga cheltuiala</Button>
+                </div>
+                <DataTable value={expenses} paginator rows={4} responsiveLayout="scroll" filters={filters}
+                    filterDisplay="row" globalFilterFields={['id_categorie_cheltuieli', 'expired']}>
+                    <Column field="data" header="Data" sortable></Column>
+                    <Column field="data_expirare" header="Data Expirare" sortable></Column>
+                    <Column field="suma" header="Sumă" sortable></Column>
+                    <Column field="tip" header="Tip" sortable></Column>
+                    <Column field="id_categorie_cheltuieli" header="Categorie"
+                        body={categoryTemplate} showFilterMenu={false} filterMenuStyle={{ width: '14rem' }} style={{ minWidth: '12rem' }}
+                        filter filterElement={statusRowFilterTemplate} sortable>
+                    </Column>
+                    
+                    <Column header="Expirate" field="expired" dataType="boolean" style={{ minWidth: '6rem' }}
+                        body={expiredBodyTemplate} filter filterElement={expiredRowFilterTemplate} />
+                    <Column header="Acțiuni" body={actionBodyTemplate} exportable={false} style={{ minWidth: '8rem' }} />
+                </DataTable>
+            </div>
+        </>
+    );
+}

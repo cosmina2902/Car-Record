@@ -15,7 +15,6 @@ body, html {
     position: absolute;
     width: 100%;
     height: 100%;
-   
   }
   
   .container-fluid {
@@ -30,12 +29,13 @@ body, html {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
   
-  .btn-dark {
-    background-color: #000;
+  .btn-primary {
+    background-color: #007bff;
     border: none;
     border-radius: 5px;
   }
   
+  /* Adăugat pentru a centra formularul pe verticală și orizontală */
   .min-vh-100 {
     min-height: 100vh;
   }
@@ -50,23 +50,5 @@ body, html {
   
   .justify-content-center {
     justify-content: center;
-  }
-  
-  @media (min-width: 768px) {
-    .col-md-6 {
-      max-width: 50%;
-    }
-  }
-  
-  @media (min-width: 992px) {
-    .col-lg-5 {
-      max-width: 45%;
-    }
-  }
-  
-  @media (min-width: 1200px) {
-    .col-xl-4 {
-      max-width: 40%;
-    }
   }
   

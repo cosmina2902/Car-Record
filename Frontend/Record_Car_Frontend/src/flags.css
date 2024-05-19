@@ -13,7 +13,7 @@ img.flag {
     vertical-align: middle;
 }
 
-.card {
+.card-pers {
     background: var(--surface-card);
     padding: 2rem;
     border-radius: 10px;
@@ -65,3 +65,21 @@ img.flag {
 .p-paginator {
     margin-top: 1rem; 
 }
+
+.custom-dropdown {
+    min-width: 4rem;
+    font-size: 6px;
+    
+}
+
+.custom-button {
+    background: rgb(143, 143, 143);
+    border: black;
+    box-shadow: black;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+.p-column-filter-clear-button{
+    background-color: transparent;
+}
+

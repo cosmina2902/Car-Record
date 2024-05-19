@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/addmasina.css';
 
 const AdaugareMasinaComponent = () => {
@@ -51,46 +52,57 @@ const AdaugareMasinaComponent = () => {
     };
 
     return (
-        <div className="container-pers mb-5 mt-5">
-            <h2>Adăugare Mașină</h2>
-            <form className='form-floating mb-3' onSubmit={handleSubmit}>
-                <div className="mb-3">
-                    <label htmlFor='an'>An:</label>
-                    <input type="text" name="an" value={formData.an} onChange={handleChange}
-                    placeholder='Introduceti anul fabricatiei' className='form-control'/>
+        <>
+            <div className="bg-img"></div>
+            <div className="container-fluid px-1 py-5 mx-auto min-vh-100 d-flex align-items-center justify-content-center">
+                <div className="row justify-content-center w-100">
+                    <div className="col-md-6 col-lg-5 col-xl-4 col-10 text-center">
+                        <h2 className="text-center mb-4">Adăugare Mașină</h2>
+                        <div className="card p-4">
+                            <form onSubmit={handleSubmit}>
+                                <div className="row justify-content-between text-left">
+                                    <div className="col-sm-6 mb-3">
+                                        <label className="form-label">An<span className="text-danger"> *</span></label>
+                                        <input type="text" className="form-control" id="an" name="an" value={formData.an} onChange={handleChange} placeholder="Introduceti anul fabricatiei" />
+                                    </div>
+                                    <div className="col-sm-6 mb-3">
+                                        <label className="form-label">Capacitate<span className="text-danger"> *</span></label>
+                                        <input type="text" className="form-control" id="capacitate" name="capacitate" value={formData.capacitate} onChange={handleChange} placeholder="Introduceti capacitatea" />
+                                    </div>
+                                </div>
+                                <div className="row justify-content-between text-left">
+                                    <div className="col-sm-6 mb-3">
+                                        <label className="form-label">Combustibil<span className="text-danger"> *</span></label>
+                                        <input type="text" className="form-control" id="combustibil" name="combustibil" value={formData.combustibil} onChange={handleChange} placeholder="Introduceti tipul de combustibil" />
+                                    </div>
+                                    <div className="col-sm-6 mb-3">
+                                        <label className="form-label">Marca<span className="text-danger"> *</span></label>
+                                        <input type="text" className="form-control" id="marca" name="marca" value={formData.marca} onChange={handleChange} placeholder="Introduceti marca masinii" />
+                                    </div>
+                                </div>
+                                <div className="row justify-content-between text-left">
+                                    <div className="col-sm-6 mb-3">
+                                        <label className="form-label">Model<span className="text-danger"> *</span></label>
+                                        <input type="text" className="form-control" id="model" name="model" value={formData.model} onChange={handleChange} placeholder="Introduceti modelul masinii" />
+                                    </div>
+                                    <div className="col-sm-6 mb-3">
+                                        <label className="form-label">Numar Inmatriculare<span className="text-danger"> *</span></label>
+                                        <input type="text" className="form-control" id="numar_inmatriculare" name="numar_inmatriculare" value={formData.numar_inmatriculare} onChange={handleChange} placeholder="Introduceti numarul de inmatriculare" />
+                                    </div>
+                                </div>
+                                <div className="mb-3">
+                                    <label className="form-label" htmlFor="imagine">Imagine:</label>
+                                    <input type="file" accept="image/*" className="form-control" id="imagine" name="imagine" onChange={handleImageChange} />
+                                </div>
+                                <div className="d-grid">
+                                    <button type="submit" className="btn btn-lg btn-primary text-uppercase fw-bold mb-2">Adaugă Mașină</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-                <div className="mb-3">
-                    <label>Capacitate:</label>
-                    <input type="text" name="capacitate" value={formData.capacitate} onChange={handleChange} 
-                    placeholder='Introduceti capacitatea' className='form-control'/>
-                </div>
-                <div className="mb-3">
-                    <label>Combustibil:</label>
-                    <input type="text" name="combustibil" value={formData.combustibil} onChange={handleChange} 
-                     placeholder='Introduceti tipul de combustibil' className='form-control'/>
-                </div>
-                <div className="mb-3">
-                    <label>Marca:</label>
-                    <input type="text" name="marca" value={formData.marca} onChange={handleChange}
-                     placeholder='Introduceti marca masinii' className='form-control'/>
-                </div>
-                <div className="mb-3">
-                    <label>Model:</label>
-                    <input type="text" name="model" value={formData.model} onChange={handleChange}
-                     placeholder='Introduceti modelul masinii' className='form-control'/>
-                </div>
-                <div className="mb-3">
-                    <label>Numar Inmatriculare:</label>
-                    <input type="text" name="numar_inmatriculare" value={formData.numar_inmatriculare} 
-                    onChange={handleChange}  placeholder='Introduceti numarul de inmatriculare' className='form-control'/>
-                </div>
-                <div className="mb-3">
-                    <label>Imagine:</label>
-                    <input type="file" accept="image/*" name="imagine" onChange={handleImageChange} />
-                </div>
-                <button type="submit" className="btn btn-primary">Adaugă Mașină</button>
-            </form>
-        </div>
+            </div>
+        </>
     );
 };
 

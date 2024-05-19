@@ -9,7 +9,8 @@ import { MasinaComponent } from './components/MasinaComponent'
 import AdaugareMasinaComponent from './components/AdaugareMasinaComponent'
 import { isUserLoggedIn } from './service/AuthSerive'
 import ListCheltuieliComponent from './components/ListCheltuieliComponent'
-import BasicFilterDemo from './components/BasicFilterDemo'
+import BasicFilterDemo from './components/ListCheltuieliComponent'
+import CheltuieliComponent from './components/CheltuieliComponent'
 
 
 function App() {
@@ -48,7 +49,13 @@ function App() {
             }></Route>
             <Route path='/cheltuieli' element={
               <AuthenticatedRoute>
-                  <BasicFilterDemo/>
+                  <ListCheltuieliComponent/>
+              </AuthenticatedRoute>
+            }></Route>
+
+            <Route path='/add-cheltuieli' element={
+              <AuthenticatedRoute>
+                  <CheltuieliComponent/>
               </AuthenticatedRoute>
             }></Route>
             
