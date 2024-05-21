@@ -4,35 +4,19 @@ import { Column } from 'primereact/column';
 import { Dropdown } from 'primereact/dropdown';
 import { Tag } from 'primereact/tag';
 import { FilterMatchMode } from 'primereact/api';
-import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
 import classNames from 'classnames';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { getCheltuieliMasina } from '../service/CheltuieliService';
 
 export default function ListCheltuieliComponent() {
-    const [expenses, setExpenses] = useState([
-        { id_taxa: '1', data: '2024-04-01', data_expirare: '2025-04-01', suma: '234', tip: 'schimb', id_categorie_cheltuieli: '1' },
-        { id_taxa: '8', data: '2024-05-01', data_expirare: '2024-05-01', suma: '350', tip: 'alimentare', id_categorie_cheltuieli: '2' },
-        { id_taxa: '10', data: '2024-04-01', data_expirare: '2024-04-01', suma: '234', tip: 'schimb', id_categorie_cheltuieli: '3' },
-        { id_taxa: '11', data: '2024-05-01', data_expirare: '2024-04-01', suma: '234', tip: 'schimb', id_categorie_cheltuieli: '3' },
-        { id_taxa: '1', data: '2024-04-01', data_expirare: '2025-04-01', suma: '234', tip: 'schimb', id_categorie_cheltuieli: '1' },
-        { id_taxa: '8', data: '2024-05-01', data_expirare: '2025-04-01', suma: '350', tip: 'alimentare', id_categorie_cheltuieli: '2' }
-    ]);
 
-    const navigator = useNavigate();
-
-    useEffect(() => {
-        const updatedExpenses = expenses.map(expense => ({
-            ...expense,
-            expired: new Date(expense.data_expirare) <= new Date()
-        }));
-        setExpenses(updatedExpenses);
-    }, []);
-
+    const { numarInmatriculare } = useParams();
+    const [cheltuieli, setCheltuieli] = useState([]);
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        id_categorie_cheltuieli: { value: null, matchMode: FilterMatchMode.EQUALS },
+        idCategorieCheltuieli: { value: null, matchMode: FilterMatchMode.EQUALS },
         expired: { value: null, matchMode: FilterMatchMode.EQUALS }
     });
 
@@ -44,8 +28,29 @@ export default function ListCheltuieliComponent() {
         { label: 'CHELTUIELI_CU_SERVICE', value: '5', severity: null }
     ];
 
+    const listCheltuieli = () => {
+        getCheltuieliMasina(numarInmatriculare).then((response) => {
+            const updatedCheltuieli = response.data.map(cheltuiala => ({
+                ...cheltuiala,
+                expired: cheltuiala.dataExpirare ? new Date(cheltuiala.dataExpirare) <= new Date() : false
+            }));
+            setCheltuieli(updatedCheltuieli);
+        }).catch(error => {
+            console.log(error);
+        });
+    };
+
+    useEffect(() => {
+        listCheltuieli();
+    }, [numarInmatriculare]);
+
+    const navigator = useNavigate();
+
     const categoryTemplate = (rowData) => {
-        const category = categorii.find(c => c.value === rowData.id_categorie_cheltuieli);
+        if (!rowData.idCategorieCheltuieli) {
+            return "Necunoscut";
+        }
+        const category = categorii.find(c => c.value === rowData.idCategorieCheltuieli.toString());
         return category ? <Tag value={category.label} severity={category.severity} /> : "Necunoscut";
     };
 
@@ -55,14 +60,18 @@ export default function ListCheltuieliComponent() {
 
     const statusRowFilterTemplate = (options) => {
         return (
-            <Dropdown value={options.value} options={categorii} onChange={(e) => options.filterApplyCallback(e.value)}
-                itemTemplate={categoryOptionTemplate} placeholder="Alegeti categoria" className="p-column-filter"
+            <Dropdown value={options.value} options={categorii} onChange={(e) => {
+                setFilters({
+                    ...filters,
+                    idCategorieCheltuieli: { value: e.value, matchMode: FilterMatchMode.EQUALS }
+                });
+            }} itemTemplate={categoryOptionTemplate} placeholder="Alegeti categoria" className="p-column-filter"
                 showClear style={{ minWidth: '8rem', fontSize: '12px' }} />
         );
     };
 
     const handleDelete = (rowData) => {
-        setExpenses(expenses.filter(expense => expense.id_taxa !== rowData.id_taxa));
+        setCheltuieli(cheltuieli.filter(cheltuiala => cheltuiala.id_taxa !== rowData.id_taxa));
     };
 
     const handleEdit = (rowData) => {
@@ -84,19 +93,24 @@ export default function ListCheltuieliComponent() {
 
     const expiredRowFilterTemplate = (options) => {
         return (
-            <TriStateCheckbox value={options.value} onChange={(e) => options.filterApplyCallback(e.value)} />
+            <TriStateCheckbox value={options.value || undefined} onChange={(e) => {
+                setFilters({
+                    ...filters,
+                    expired: { value: e.value, matchMode: FilterMatchMode.EQUALS }
+                });
+            }} />
         );
     };
 
-    function goToAddCheltuieli(){
-        navigator('/add-cheltuieli')
-    }
+    const goToAddCheltuieli = () => {
+        navigator('/add-cheltuieli');
+    };
 
     return (
         <>
             <br /><br />
             <div className="text-center">
-                <h2>Cheltuieli pentru masina x</h2>
+                <h2>Cheltuieli pentru masina {numarInmatriculare}</h2>
             </div>
             <br />
 
@@ -104,17 +118,16 @@ export default function ListCheltuieliComponent() {
                 <div className="text-right justify-content-end mb-3">
                     <Button className="btn btn-outline-dark" onClick={goToAddCheltuieli}>Adauga cheltuiala</Button>
                 </div>
-                <DataTable value={expenses} paginator rows={4} responsiveLayout="scroll" filters={filters}
-                    filterDisplay="row" globalFilterFields={['id_categorie_cheltuieli', 'expired']}>
+                <DataTable value={cheltuieli} paginator rows={4} responsiveLayout="scroll" filters={filters}
+                    filterDisplay="row" globalFilterFields={['idCategorieCheltuieli', 'expired']}>
                     <Column field="data" header="Data" sortable></Column>
-                    <Column field="data_expirare" header="Data Expirare" sortable></Column>
+                    <Column field="dataExpirare" header="Data Expirare" sortable></Column>
                     <Column field="suma" header="Sumă" sortable></Column>
                     <Column field="tip" header="Tip" sortable></Column>
-                    <Column field="id_categorie_cheltuieli" header="Categorie"
+                    <Column field="idCategorieCheltuieli" header="Categorie"
                         body={categoryTemplate} showFilterMenu={false} filterMenuStyle={{ width: '14rem' }} style={{ minWidth: '12rem' }}
                         filter filterElement={statusRowFilterTemplate} sortable>
                     </Column>
-                    
                     <Column header="Expirate" field="expired" dataType="boolean" style={{ minWidth: '6rem' }}
                         body={expiredBodyTemplate} filter filterElement={expiredRowFilterTemplate} />
                     <Column header="Acțiuni" body={actionBodyTemplate} exportable={false} style={{ minWidth: '8rem' }} />

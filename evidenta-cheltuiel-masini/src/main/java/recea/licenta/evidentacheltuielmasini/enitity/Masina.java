@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -30,5 +32,11 @@ public class Masina {
     @Column(nullable = false, unique = true, name = "numarInmatriculare")
     private String numarInmatriculare;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_poza", referencedColumnName = "id")
+    private PozaMasina pozaMasina;
+
+    @OneToMany(mappedBy = "masina", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cheltuieli> cheltuieli;
 
 }

@@ -38,6 +38,7 @@ public class SpringSecurityConfig {
                     authorize.requestMatchers(HttpMethod.PUT, "/masini/**").permitAll();
                     authorize.requestMatchers(HttpMethod.POST, "/masini/**").permitAll();
                     authorize.requestMatchers(HttpMethod.DELETE, "/masini/**").permitAll();
+                    authorize.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
                     authorize.anyRequest().authenticated();
                 }).httpBasic(Customizer.withDefaults());
 

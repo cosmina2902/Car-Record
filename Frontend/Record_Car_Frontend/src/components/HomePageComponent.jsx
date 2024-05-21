@@ -1,46 +1,49 @@
-import React, { useState } from 'react'
-import '../css/home.css'
-import fiatImage from '../images/fiat.jpg';
-import pasatImage from '../images/passat.jpg';
+import React, { useEffect, useState } from 'react';
+import '../css/home.css';
 import { useNavigate } from 'react-router-dom';
-
+import { getAllMasini, getImagineMasina } from '../service/MasinaService';
+import defaultImage from '../images/nodata.jpg'; // Import the default image
 
 const HomePageComponent = () => {
-    const dummyData = [
-        {
-            id_masina: 1,
-            an: 2008,
-            capacitate : 1.4,
-            combustibil: 'benzina',
-            id_user: 1,
-            marca: 'Fiat',
-            model: 'Punto',
-            numar_inmatriculare: 'TM81DRD',
-            imagine : fiatImage
-        },
-        {
-            id_masina: 2,
-            an: 2017,
-            capacitate : 1.9,
-            combustibil: 'disel',
-            id_user: 1,
-            marca: 'Volkswagen',
-            model: 'Pasat',
-            numar_inmatriculare: 'TM85PGF',
-            imagine : pasatImage
-        }
 
-    ]
-    const [masini, setMasini] = useState(dummyData)
+    const [masini, setMasini] = useState([]);
+
+    useEffect(() => {
+        masinileUserului();
+    }, []);
+
+    function masinileUserului() {
+        getAllMasini().then((response) => {
+            const promises = response.data.map(masina => {
+                if (masina.pozaMasina) {
+                    console.log(masina)
+                    return getImagineMasina(masina.pozaMasina.name)
+                        .then(response => URL.createObjectURL(response.data))
+                        .then(imageUrl => {
+                            return { ...masina, imageUrl };
+                        });
+                } else {
+                    return Promise.resolve({ ...masina, imageUrl: defaultImage }); 
+                }
+            });
+            Promise.all(promises).then(masiniWithImages => {
+                setMasini(masiniWithImages);
+            });
+        }).catch(error => {
+            console.error(error);
+        });
+    }
 
     const navigator = useNavigate();
 
-    function vizualizareDetaliiMasina(id){
+    function vizualizareDetaliiMasina(id) {
         navigator(`/masina/${id}`);
     }
-    function goToCheltuieli(){
-        navigator('/cheltuieli')
+
+    function goToCheltuieli(numarInmatriculare) {
+        navigator(`/cheltuieli/${numarInmatriculare}`);
     }
+
     return (
         <>
             <div className="jumbotron text-center">
@@ -57,17 +60,18 @@ const HomePageComponent = () => {
                 <div className="container">
                     <div className="row">
                         {masini.map((masina) => (
-                            <div className="col-md-4" key={masina.id_masina}>
+                            <div className="col-md-4" key={masina.idMasina}>
                                 <div className="card mb-2 box-shadow">
-                                    <img className="card-img-top" src={masina.imagine} alt={`Imagine ${masina.marca} ${masina.model}`} />
-
+                                    <img className="card-img-top" src={masina.imageUrl || defaultImage} alt={`Imagine ${masina.numarInmatriculare} ${masina.model}`} />
                                     <div className="card-body">
-                                        <p className="card-text">{masina.marca} {masina.model} {masina.capacitate} {masina.combustibil}</p>
+                                        <p className="card-text text-center">{masina.numarInmatriculare} </p>
                                         <div className="d-flex justify-content-between align-items-center">
                                             <div className="btn-group">
                                                 <button type="button" className="btn btn-sm btn-outline-secondary" 
-                                                onClick={()=> vizualizareDetaliiMasina(masina.id_masina) }>Detalii</button>
-                                                <button type="button" className="btn btn-sm btn-outline-secondary" onClick={goToCheltuieli}>Cheltuieli</button>
+                                                    onClick={() => vizualizareDetaliiMasina(masina.idMasina)}>Detalii</button>
+                                                    
+                                                <button type="button" className="btn btn-sm btn-outline-secondary" onClick={()=> goToCheltuieli(masina.numarInmatriculare)}>Cheltuieli</button>
+                                               
                                             </div>
                                         </div>
                                     </div>
@@ -81,4 +85,4 @@ const HomePageComponent = () => {
     );
 }
 
-export default HomePageComponent
+export default HomePageComponent;

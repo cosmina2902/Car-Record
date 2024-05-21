@@ -4,14 +4,18 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import recea.licenta.evidentacheltuielmasini.dto.MasinaDto;
 import recea.licenta.evidentacheltuielmasini.enitity.Masina;
+import recea.licenta.evidentacheltuielmasini.enitity.PozaMasina;
 import recea.licenta.evidentacheltuielmasini.enitity.User;
 import recea.licenta.evidentacheltuielmasini.exception.ResourceNotFound;
 import recea.licenta.evidentacheltuielmasini.repository.MasinaRepository;
 import recea.licenta.evidentacheltuielmasini.repository.UserRepository;
 import recea.licenta.evidentacheltuielmasini.service.MasinaService;
+import recea.licenta.evidentacheltuielmasini.service.PozaMasinaService;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,12 +28,19 @@ public class MasinaServiceImpl implements MasinaService {
 
     private UserRepository userRepository;
 
+    private PozaMasinaService pozaMasinaService;
+
     private ModelMapper modelMapper;
 
     @Override
-    public MasinaDto adaugareMasina(MasinaDto masinaDto) {
+    public MasinaDto adaugareMasina(MasinaDto masinaDto, MultipartFile file) throws IOException {
 
         Masina masina = modelMapper.map(masinaDto, Masina.class);
+
+        if (file != null && !file.isEmpty()) {
+            PozaMasina pozaMasina = pozaMasinaService.uploadImage(file);
+            masina.setPozaMasina(pozaMasina);
+        }
 
         Masina saveMasina = masinaRepository.save(masina);
 
@@ -59,7 +70,7 @@ public class MasinaServiceImpl implements MasinaService {
     }
 
     @Override
-    public MasinaDto updateMasina(Long id, MasinaDto masinaDto) {
+    public MasinaDto updateMasina(Long id, MasinaDto masinaDto, MultipartFile file) throws IOException {
         Masina masina = masinaRepository.findById(id)
                 .orElseThrow( ()-> new ResourceNotFound("Masina cu id-ul " + id + " nu a gost gasita"));
         masina.setAn(masinaDto.getAn());
@@ -68,6 +79,10 @@ public class MasinaServiceImpl implements MasinaService {
         masina.setMarca(masinaDto.getMarca());
         masina.setModel(masinaDto.getModel());
         masina.setNumarInmatriculare(masinaDto.getNumarInmatriculare());
+        if (file != null && !file.isEmpty()) {
+            PozaMasina pozaMasina = pozaMasinaService.uploadImage(file);
+            masina.setPozaMasina(pozaMasina);
+        }
 
         Masina updateMasina = masinaRepository.save(masina);
 
@@ -100,6 +115,11 @@ public class MasinaServiceImpl implements MasinaService {
         return userMasini.stream()
                 .map(masina -> modelMapper.map(masina, MasinaDto.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public String stergereCheltuialaMasina(Long id) {
+        return null;
     }
 
 }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../css/register.css';
 import { useNavigate } from 'react-router-dom';
-import { saveLoggedInUser } from '../service/AuthSerive';
+import { registerAPICall, saveLoggedInUser } from '../service/AuthSerive';
 import Alert from 'react-bootstrap/Alert';
 
 const RegisterComponent = () => {
@@ -16,14 +16,23 @@ const RegisterComponent = () => {
 
     function registerUser(e) {
         e.preventDefault();
-        const register = { name, username, email, password, confPassword };
+        const register = { name, username, email, password };
+
+       
         if (password !== confPassword) {
             setError("Atentie! Parolele nu corespund!");
             setAlert('danger');
         } else {
+            registerAPICall(register).then((response)=>{
+                console.log(response.data)
+            }).catch(error=>{
+                console.log(error)
+            })
+
             setError("User inregistrat cu succes! Mergeti la pagina de Login");
             setAlert('success');
         }
+
     }
 
     return (

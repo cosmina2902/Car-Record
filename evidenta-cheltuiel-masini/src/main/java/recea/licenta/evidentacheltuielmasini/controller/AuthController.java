@@ -3,10 +3,7 @@ package recea.licenta.evidentacheltuielmasini.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import recea.licenta.evidentacheltuielmasini.dto.LoginDto;
 import recea.licenta.evidentacheltuielmasini.dto.RegisterDto;
 import recea.licenta.evidentacheltuielmasini.service.AuthService;
@@ -14,6 +11,7 @@ import recea.licenta.evidentacheltuielmasini.service.AuthService;
 @RestController
 @RequestMapping("/auth")
 @AllArgsConstructor
+@CrossOrigin
 public class AuthController {
 
     private AuthService authService;

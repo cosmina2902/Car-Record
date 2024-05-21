@@ -47,7 +47,12 @@ function App() {
                   <AdaugareMasinaComponent/>
               </AuthenticatedRoute>
             }></Route>
-            <Route path='/cheltuieli' element={
+            <Route path='/edit-masina/:id' element={
+              <AuthenticatedRoute>
+                  <AdaugareMasinaComponent/>
+              </AuthenticatedRoute>
+            }></Route>
+            <Route path='/cheltuieli/:numarInmatriculare' element={
               <AuthenticatedRoute>
                   <ListCheltuieliComponent/>
               </AuthenticatedRoute>

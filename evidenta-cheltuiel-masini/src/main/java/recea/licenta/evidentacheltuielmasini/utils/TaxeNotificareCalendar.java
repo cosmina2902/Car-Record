@@ -24,7 +24,7 @@ public class TaxeNotificareCalendar {
     private MasinaService masinaService;
 
 
-    @Scheduled(cron = "0 39 1 * * ?")
+    @Scheduled(cron = "0 27 18 * * ?")
     public void sendTaxExpirationNotices() {
 
         int daysInAdvance = 7;

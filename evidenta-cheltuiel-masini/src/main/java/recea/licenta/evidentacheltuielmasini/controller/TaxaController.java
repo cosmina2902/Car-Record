@@ -24,7 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/masini/taxe")
 @AllArgsConstructor
-//@CrossOrigin
+@CrossOrigin
 public class TaxaController {
 
     private TaxaService taxaService;
@@ -39,6 +39,7 @@ public class TaxaController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,
                     "Nu aveți permisiunea să adăugați taxe pentru această mașină.");
         }
+        taxeDto.setNumarInmatriculare(masinaDto.getNumarInmatriculare());
 
         TaxeDto salvareTaxa = taxaService.adaugareTaxa(taxeDto);
         return new ResponseEntity<>(salvareTaxa, HttpStatus.CREATED);

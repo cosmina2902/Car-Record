@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import recea.licenta.evidentacheltuielmasini.enitity.PozaMasina;
 
 @Getter
 @Setter
@@ -19,6 +20,8 @@ public class MasinaDto {
     private double capacitate;
     private String combustibil;
     private String numarInmatriculare;
+
+    private PozaMasina pozaMasina;
 
 
 

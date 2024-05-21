@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../css/login.css';
 import { useNavigate } from 'react-router-dom';
-import { saveLoggedInUser } from '../service/AuthSerive';
+import { loginAPICall, saveLoggedInUser, storeToken } from '../service/AuthSerive';
 import Alert from 'react-bootstrap/Alert';
 
 const LoginComponent = () => {
@@ -10,15 +10,33 @@ const LoginComponent = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     
-    function goToHomePage(e) {
+    async function goToHomePage(e) {
         e.preventDefault();
 
-        if (username === 'cosmina' && password === 'password') {
+        // if (username === 'cosmina' && password === 'password') {
+        //     saveLoggedInUser(username);
+        //     navigator('/home');
+        // } else {
+        //     setError('Invalid credentials');
+        // }
+        await loginAPICall(username, password).then((response)=>{
+            
+            console.log(response.data)
+
+            const token = 'Basic ' + window.btoa(username + ":" + password);
+
             saveLoggedInUser(username);
+            
+            storeToken(token);
+
+            
             navigator('/home');
-        } else {
+           // window.location.reload(false);
+
+        }).catch(error=>{
+            console.error(error);
             setError('Invalid credentials');
-        }
+        })
     }
 
     return (
