@@ -69,7 +69,7 @@ const LoginComponent = () => {
                                         <div className="d-grid">
                                             <button className="btn btn-lg btn-primary btn-login text-uppercase fw-bold mb-2" type="submit" onClick={(e) => goToHomePage(e)}>Sign in</button>
                                             <div className="text-center">
-                                                <a className="small" href="#">Forgot password?</a>
+                                                <a className="small" href="/forgot-password">Forgot password?</a>
                                             </div>
                                         </div>
                                     </form>

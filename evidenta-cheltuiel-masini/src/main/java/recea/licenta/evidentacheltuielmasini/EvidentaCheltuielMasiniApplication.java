@@ -8,14 +8,15 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import recea.licenta.evidentacheltuielmasini.service.EmailSenderService;
 
 @SpringBootApplication
 @AllArgsConstructor
 @EnableScheduling
+@EnableTransactionManagement
 public class EvidentaCheltuielMasiniApplication {
 
-	private EmailSenderService senderService;
 
 	@Bean
 	public ModelMapper modelMapper(){
@@ -27,11 +28,5 @@ public class EvidentaCheltuielMasiniApplication {
 
 		SpringApplication.run(EvidentaCheltuielMasiniApplication.class, args);
 	}
-//	@EventListener(ApplicationReadyEvent.class)
-//	public void sendEmail(){
-//		senderService.sendEmail("diadiandra54@gmail.com",
-//				"Cosmina te iubeste",
-//				"Vezi ca trebuie sa-ti platesti itp-ul");
-//	}
 
 }

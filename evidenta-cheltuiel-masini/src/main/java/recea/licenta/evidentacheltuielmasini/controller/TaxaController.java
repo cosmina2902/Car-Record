@@ -52,6 +52,13 @@ public class TaxaController {
         return ResponseEntity.ok(taxe);
     }
 
+    @GetMapping("/taxa/{id}")
+    public ResponseEntity<TaxeDto> getTaxaDupaId(@PathVariable Long id) {
+        verificareMasinaUser(id);
+        TaxeDto taxa = taxaService.getTaxaDupaId(id);
+        return ResponseEntity.ok(taxa);
+    }
+
     @PutMapping("/taxa/{id}")
     public ResponseEntity<TaxeDto> updateTaxa(@PathVariable Long id, @RequestBody TaxeDto taxeDto) {
         verificareMasinaUser(id);
@@ -151,7 +158,8 @@ public class TaxaController {
 
         MasinaDto masina = masinaService.numarInmatriculare(taxaExistenta.getNumarInmatriculare());
         if (masina == null || !masina.getIdUser().equals(user.getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Nu aveți permisiunea să stergeti această taxă.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Nu aveți permisiunea să efectuati actiuni aspura aceastei taxe.");
         }
     }
 

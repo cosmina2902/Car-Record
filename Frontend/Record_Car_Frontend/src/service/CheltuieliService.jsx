@@ -17,3 +17,9 @@ axios.interceptors.request.use(function (config) {
 export const getCheltuieliMasina = (numarInmatriculare) => axios.get(BASE_URL + `/taxa/numarInmatriculare/${numarInmatriculare}`);
 
 export const addCheltuiala = (cheltuiala) => axios.post(BASE_URL, cheltuiala);
+
+export const getTaxaById = (idCheltuiala) => axios.get(BASE_URL + `/taxa/${idCheltuiala}`);
+
+export const updateCheltuiala = (idCheltuiala, cheltuiala) => axios.put(BASE_URL + `/taxa/${idCheltuiala}`, cheltuiala);
+
+export const deleteCheltuiala = (idCheltuiala) => axios.delete(BASE_URL + `/taxa/${idCheltuiala}`);

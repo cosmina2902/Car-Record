@@ -8,7 +8,7 @@ import { Button } from 'primereact/button';
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
 import classNames from 'classnames';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getCheltuieliMasina } from '../service/CheltuieliService';
+import { deleteCheltuiala, getCheltuieliMasina } from '../service/CheltuieliService';
 
 export default function ListCheltuieliComponent() {
 
@@ -71,11 +71,25 @@ export default function ListCheltuieliComponent() {
     };
 
     const handleDelete = (rowData) => {
-        setCheltuieli(cheltuieli.filter(cheltuiala => cheltuiala.id_taxa !== rowData.id_taxa));
+
+        const confirmDelete = window.confirm(`Sunteti sigur ca doriti sa stergeti aceasta taxa?`);
+
+        if(confirmDelete){
+            deleteCheltuiala(rowData.idTaxa).then((response)=>{
+                console.log(response.data)
+            }).catch(error => {
+                console.log(error);
+            })
+        }
+        
+       window.location.reload();
+
     };
 
     const handleEdit = (rowData) => {
-        console.log('Editare:', rowData);
+        console.log('Editare:', rowData.idTaxa);
+
+        navigator(`/edit-cheltuiala/${rowData.idTaxa}`)
     };
 
     const actionBodyTemplate = (rowData) => {

@@ -11,6 +11,8 @@ import { isUserLoggedIn } from './service/AuthSerive'
 import ListCheltuieliComponent from './components/ListCheltuieliComponent'
 import BasicFilterDemo from './components/ListCheltuieliComponent'
 import CheltuieliComponent from './components/CheltuieliComponent'
+import ForgotPassword from './components/ForgotPassword'
+import ResestPasswordComponent from './components/ResestPasswordComponent'
 
 
 function App() {
@@ -32,6 +34,8 @@ function App() {
             <Route path='/' element={<LoginComponent/>}></Route>
             <Route path='/login' element={<LoginComponent/>}></Route>
             <Route path='/register' element={<RegisterComponent/>}></Route>
+            <Route path='/forgot-password' element={<ForgotPassword/>}></Route>
+            <Route path='/reset-password' element={<ResestPasswordComponent/>}></Route>
             <Route path='/home' element={
             <AuthenticatedRoute>
                 <HomePageComponent/>
@@ -59,6 +63,11 @@ function App() {
             }></Route>
 
             <Route path='/add-cheltuieli' element={
+              <AuthenticatedRoute>
+                  <CheltuieliComponent/>
+              </AuthenticatedRoute>
+            }></Route>
+             <Route path='/edit-cheltuiala/:id' element={
               <AuthenticatedRoute>
                   <CheltuieliComponent/>
               </AuthenticatedRoute>

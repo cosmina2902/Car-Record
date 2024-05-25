@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/cheltuieli.css';
 import { getAllMasini } from '../service/MasinaService';
-import { addCheltuiala } from '../service/CheltuieliService';
-import { useNavigate } from 'react-router-dom';
+import { addCheltuiala, getTaxaById, updateCheltuiala } from '../service/CheltuieliService';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const CheltuieliComponent = () => {
+
+  const { id } = useParams();
   const [numereInmatriculare, setNumereInmatriculare] = useState([]);
 
   const [data, setData ] = useState('');
@@ -28,8 +30,24 @@ const CheltuieliComponent = () => {
       }
     };
 
+    if(id){
+
+      getTaxaById(id).then((response)=> {
+        console.log(response.data)
+        setData(response.data.data)
+        setDataExpirare(response.data.dataExpirare)
+        setNumarInmatriculare(response.data.numarInmatriculare)
+        setSuma(response.data.suma)
+        setTip(response.data.tip)
+        setIdCategorie(response.data.idCategorieCheltuieli)
+      }).catch(error => {
+        console.log(error)
+      })
+
+    }
+
     fetchMasini();
-  }, []);
+  }, [id]);
 
   const adaugaCheltuieli = (e) => {
     e.preventDefault();
@@ -43,15 +61,33 @@ const CheltuieliComponent = () => {
       idCategorieCheltuieli: parseInt(idCategorieCheltuieli)
     };
 
-    console.log('Cheltuiala to be added:', idCategorieCheltuieli);
+    if(id){
+      updateCheltuiala(id, cheltuiala).then((response)=> {
+        console.log(response.data);
+        navigate(`/cheltuieli/${numarInmatriculare}`);
+      }).catch(error => {
+        console.error('Error cheltuiala:', error);
+      });
+    }
+    else{
+      addCheltuiala(cheltuiala).then((response) => {
+        console.log('Server response:', response.data);
+        navigate(`/cheltuieli/${numarInmatriculare}`);
+      }).catch(error => {
+        console.error('Error adding cheltuiala:', error);
+      });
+    }
 
-    addCheltuiala(cheltuiala).then((response) => {
-      console.log('Server response:', response.data);
-      navigate(`/cheltuieli/${numarInmatriculare}`);
-    }).catch(error => {
-      console.error('Error adding cheltuiala:', error);
-    });
+    
   };
+  const handleTitle = () => {
+    return id ? <h2 className="text-center mb-4">Editare Cheltuiala</h2> : <h2 className="text-center mb-4">Adăugare Cheltuiala</h2>;
+};
+
+  const handleButtonName = () => {
+    return id? 'Editeaza Cheltuiala' : 'Adauga Cheltuiala';
+  }
+
 
   const validate = (fieldId) => {
     const input = document.getElementById(fieldId);
@@ -68,7 +104,7 @@ const CheltuieliComponent = () => {
       <div className="container-fluid px-1 py-5 mx-auto">
         <div className="row d-flex justify-content-center">
           <div className="col-xl-7 col-lg-8 col-md-9 col-11 text-center">
-            <h3>Adauga o noua cheltuiala</h3>
+            {handleTitle()}
             <div className="card p-4 ml-8">
               <form className="form-card" onSubmit={adaugaCheltuieli}>
                 <div className="row justify-content-between text-left">
@@ -159,12 +195,11 @@ const CheltuieliComponent = () => {
                       <option value='4'>CHELTUIELI_CU_BATERIA</option>
                       <option value='5'>CHELTUIELI_CU_SERVICE</option>
                     </select>
-                    <p>{idCategorieCheltuieli}</p>
                   </div>
                 </div>
                 <div className="row justify-content-center ">
                   <div className="col-sm-6">
-                    <button type="submit" className="btn btn-dark btn-block mt-4">Adauga Cheltuiala</button>
+                    <button type="submit" className="btn btn-dark btn-block mt-4">{handleButtonName()}</button>
                   </div>
                 </div>
               </form>

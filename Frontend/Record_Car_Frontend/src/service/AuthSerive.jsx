@@ -11,9 +11,15 @@ export const storeToken = (token) => localStorage.setItem("token", token);
 
 export const getToken = () => localStorage.getItem("token");
 
+export const getEmail = () => localStorage.getItem("email");
+
 
 export const saveLoggedInUser = (username) => {
     sessionStorage.setItem("authenticatedUser", username)
+}
+
+export const saveEmailUser = (email) => {
+    sessionStorage.setItem("email", email)
 }
 
 export const isUserLoggedIn = () => {
@@ -33,4 +39,22 @@ export const getLoggedInUser = () =>{
 export const logout = () => {
     localStorage.clear();
     sessionStorage.clear();
+}
+
+export const forgotPassword = (email) => {
+    return axios.put(`${AUTH_REST_API_BASE_URL}/forgot`, null, {
+        params: { email }
+    });
+}
+
+export const changePassword = (email, number, password) => {
+    return axios.put(`${AUTH_REST_API_BASE_URL}/set-new-password`, null, {
+        params : {
+            email, number
+        },
+        headers: {
+            'password': password
+        }
+        
+    })
 }
