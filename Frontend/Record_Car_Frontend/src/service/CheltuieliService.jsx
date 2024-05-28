@@ -23,3 +23,10 @@ export const getTaxaById = (idCheltuiala) => axios.get(BASE_URL + `/taxa/${idChe
 export const updateCheltuiala = (idCheltuiala, cheltuiala) => axios.put(BASE_URL + `/taxa/${idCheltuiala}`, cheltuiala);
 
 export const deleteCheltuiala = (idCheltuiala) => axios.delete(BASE_URL + `/taxa/${idCheltuiala}`);
+
+export const getCheltuieliAnLuna = (numarInmatriculare, an, luna) => axios.get(BASE_URL + `/taxa/numarInmatriculare/${numarInmatriculare}/${an}/${luna}`);
+
+export const getCheltuieliCategorie = (categorie, numarInmatriculare) => axios.get(BASE_URL + `/taxa/categorie/${categorie}/${numarInmatriculare}`);
+
+export const getCheltuieliStartEndDate = (numarInmatriculare, startDate, endDate) => axios.get(BASE_URL + 
+  `/taxa/numarInmatriculare/${numarInmatriculare}/perioada/${startDate}/endDate/${endDate}`);

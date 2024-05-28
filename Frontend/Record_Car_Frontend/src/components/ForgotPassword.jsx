@@ -9,9 +9,6 @@ const ForgotPassword = () => {
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
 
-    
-    const resetLink = `http://localhost:3000/setNewPassword?email=${encodeURIComponent(email)}`;
-
 
     const handleSubmit = (e) => {
         e.preventDefault();

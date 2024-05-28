@@ -18,6 +18,6 @@ public class NumberResetCleanup {
     public void cleanUpOldNumberRessets() {
         LocalDateTime threeMinutesAgo = LocalDateTime.now().minusMinutes(3);
         numberResetRepository.deleteAllByCreatedAtBefore(threeMinutesAgo);
-        System.out.println("Tabela resetata cu succes!");
+
     }
 }

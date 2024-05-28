@@ -13,6 +13,7 @@ import BasicFilterDemo from './components/ListCheltuieliComponent'
 import CheltuieliComponent from './components/CheltuieliComponent'
 import ForgotPassword from './components/ForgotPassword'
 import ResestPasswordComponent from './components/ResestPasswordComponent'
+import ChartComponent from './components/ChartComponent'
 
 
 function App() {
@@ -59,6 +60,12 @@ function App() {
             <Route path='/cheltuieli/:numarInmatriculare' element={
               <AuthenticatedRoute>
                   <ListCheltuieliComponent/>
+              </AuthenticatedRoute>
+            }></Route>
+
+            <Route path='/charts/:numarInmatriculare' element={
+              <AuthenticatedRoute>
+                  <ChartComponent/>
               </AuthenticatedRoute>
             }></Route>
 

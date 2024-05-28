@@ -45,7 +45,7 @@ const HeaderCompnent = () => {
                 {
                   isAuth && <NavDropdown title="Taxe" id="navbarScrollingDropdown">
                   <NavDropdown.Item href="#action3">Taxe</NavDropdown.Item>
-                  <NavDropdown.Item href="#action4">
+                  <NavDropdown.Item href="/charts">
                     Another action
                   </NavDropdown.Item>
                   <NavDropdown.Divider />

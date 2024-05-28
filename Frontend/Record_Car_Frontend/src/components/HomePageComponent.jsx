@@ -3,6 +3,8 @@ import '../css/home.css';
 import { useNavigate } from 'react-router-dom';
 import { getAllMasini, getImagineMasina } from '../service/MasinaService';
 import defaultImage from '../images/nodata.jpg'; // Import the default image
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCar, faChartArea, faChartPie, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
 const HomePageComponent = () => {
 
@@ -43,6 +45,9 @@ const HomePageComponent = () => {
     function goToCheltuieli(numarInmatriculare) {
         navigator(`/cheltuieli/${numarInmatriculare}`);
     }
+    function goToGrafice(numarInmatriculare){
+        navigator(`/charts/${numarInmatriculare}`)
+    }
 
     return (
         <>
@@ -61,7 +66,11 @@ const HomePageComponent = () => {
                     <div className="row">
                         {masini.map((masina) => (
                             <div className="col-md-4" key={masina.idMasina}>
-                                <div className="card mb-2 box-shadow">
+                                
+                                <div className="card mb-2 box-shadow position-relative">
+                                <button type="button" className="btn position-absolute top-0 end-0 m-2">
+                                        <FontAwesomeIcon icon={faChartPie} onClick={()=> goToGrafice(masina.numarInmatriculare)}/>
+                                    </button>
                                     <img className="card-img-top" src={masina.imageUrl || defaultImage} alt={`Imagine ${masina.numarInmatriculare} ${masina.model}`} />
                                     <div className="card-body">
                                         <p className="card-text text-center">{masina.numarInmatriculare} </p>
