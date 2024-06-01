@@ -85,7 +85,21 @@ public class AuthServiceImpl implements AuthService {
                 loginDto.getPassword()
         ));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return "User login cu success";
+
+        Optional<User> userOptional =userRepository.findByUsernameOrEmail(
+                loginDto.getUsernameOrEmail(), loginDto.getUsernameOrEmail());
+        String role = null;
+        if(userOptional.isPresent()){
+            User loggedInUser = userOptional.get();
+            Optional <Role> optionalRole = loggedInUser.getRoles().stream().findFirst();
+
+            if(optionalRole.isPresent()){
+                Role userRole = optionalRole.get();
+
+                role = userRole.getName();
+            }
+        }
+        return role;
     }
 
     @Override

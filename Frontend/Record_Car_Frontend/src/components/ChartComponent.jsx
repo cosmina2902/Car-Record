@@ -285,8 +285,8 @@ const ChartComponent = () => {
     }
   };
 
-  const [startDate, setStartDate] = useState(new Date('2024-01-01'));
-  const [endDate, setEndDate] = useState(new Date('2024-12-31'));
+  const [startDate, setStartDate] = useState('2024-01-01');
+  const [endDate, setEndDate] = useState('2024-12-31');
 
   useEffect(() => {
     if (numarInmatriculare && startDate && endDate) {
@@ -340,12 +340,12 @@ const ChartComponent = () => {
     });
   }
 
-  const handleStartDateChange = (date) => {
-    setStartDate(date);
+  const handleStartDateChange = (e) => {
+    setStartDate(e.target.value);
   };
 
-  const handleEndDateChange = (date) => {
-    setEndDate(date);
+  const handleEndDateChange = (e) => {
+    setEndDate(e.target.value);
   };
 
   const barChartData = {
@@ -466,7 +466,7 @@ const ChartComponent = () => {
                 <option value="cauciucuri">Cheltuieli cu cauciucuri</option>
               </select>
             </div>
-            <h2 style={{ textAlign: 'center', fontSize: '20px' }}>Cheltuieli totale pe categoria </h2>
+            <h2 style={{ textAlign: 'center', fontSize: '20px' }}>Cheltuieli totale pe categoria selectata</h2>
             <ReactApexChart options={areaChartData.options} series={areaChartData.series} type="line" height={350} />
           </div>
         </div>
@@ -475,8 +475,8 @@ const ChartComponent = () => {
 
       <div className="container mt-4 mb-4">
         <div className="col-12">
-        <div className="d-grid justify-content-end align-items-center mb-3">
-            <div className="me-2">
+        <div className="row justify-content-end">
+            <div className="col-4">
               <label className="form-label">Start Date</label>
               <input
                 type="date"
@@ -487,7 +487,7 @@ const ChartComponent = () => {
                 onChange={handleStartDateChange}
               />
             </div>
-            <div>
+            <div className='col-4'>
               <label className="form-label">End Date</label>
               <input
                 type="date"
@@ -499,6 +499,7 @@ const ChartComponent = () => {
               />
             </div>
           </div>
+          <br/>
           <h2 style={{ textAlign: 'center', fontSize: '20px' }}>Cheltuieli Totale</h2>
           <ReactApexChart options={barChartData.options} series={barChartData.series} type="bar" height={400} />
         </div>

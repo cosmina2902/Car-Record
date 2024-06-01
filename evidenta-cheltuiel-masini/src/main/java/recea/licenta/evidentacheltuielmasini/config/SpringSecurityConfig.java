@@ -33,6 +33,7 @@ public class SpringSecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf((csrf) -> csrf.disable())
                 .authorizeHttpRequests( (authorize) -> {
+                    authorize.requestMatchers(HttpMethod.GET, "/admin/**").hasRole("ADMIN");
                     authorize.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
                     authorize.requestMatchers(HttpMethod.PUT, "/auth/**").permitAll();
                     authorize.requestMatchers(HttpMethod.GET, "/masini/**").permitAll();

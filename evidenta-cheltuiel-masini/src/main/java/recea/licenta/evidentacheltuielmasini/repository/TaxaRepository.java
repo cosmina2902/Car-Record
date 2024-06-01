@@ -22,4 +22,9 @@ public interface TaxaRepository extends JpaRepository<Taxe, Long> {
     List<Taxe> findByCategorieCheltuieliIdAndNumarInmatriculare(Long categorieId, String numarInmatriculare);
     List<Taxe> findByNumarInmatriculareAndDataExpirareBefore(String numarInamtriculare, LocalDate dataExpirare);
     List<Taxe> findByDataExpirareBetween(LocalDate start, LocalDate end);
+
+    @Query("SELECT t FROM Taxe t JOIN Masina m ON t.numarInmatriculare " +
+            "= m.numarInmatriculare WHERE m.marca = " +
+            ":marca")
+    List<Taxe> findByMarca(@Param("marca") String marca);
 }

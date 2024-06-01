@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import recea.licenta.evidentacheltuielmasini.enitity.Masina;
 
 import java.util.List;
+import java.util.Set;
 
 public interface MasinaRepository  extends JpaRepository<Masina, Long> {
     Masina findByNumarInmatriculare(String numarInmatriculare);
@@ -14,6 +15,9 @@ public interface MasinaRepository  extends JpaRepository<Masina, Long> {
     List<Masina> findByUserId(Long userId);
     @Query("SELECT m FROM Masina m WHERE m.user.username = :username")
     List<Masina> findByUsername(@Param("username") String username);
+
+    @Query("SELECT m.marca FROM Masina m")
+    Set<String> findAllMarcas();
 
     List<Masina> findAllByUserId(Long userId);
 

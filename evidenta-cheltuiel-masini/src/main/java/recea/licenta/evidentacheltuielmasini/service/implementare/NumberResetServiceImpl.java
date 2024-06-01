@@ -21,8 +21,6 @@ import java.util.random.RandomGenerator;
 public class NumberResetServiceImpl implements NumberResetService {
     private UserRepository userRepository;
 
-    private ModelMapper modelMapper;
-
     private NumberResetRepository numberResetRepository;
 
     @Override

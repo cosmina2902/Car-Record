@@ -25,7 +25,11 @@ const LoginComponent = () => {
 
             const token = 'Basic ' + window.btoa(username + ":" + password);
 
-            saveLoggedInUser(username);
+            const role = response.data;
+
+            console.log(role);
+
+            saveLoggedInUser(username, role);
             
             storeToken(token);
 

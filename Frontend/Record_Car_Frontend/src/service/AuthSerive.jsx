@@ -12,11 +12,23 @@ export const storeToken = (token) => localStorage.setItem("token", token);
 export const getToken = () => localStorage.getItem("token");
 
 export const getEmail = () => localStorage.getItem("email");
-
-
-export const saveLoggedInUser = (username) => {
-    sessionStorage.setItem("authenticatedUser", username)
+export const saveLoggedInUser = (username, role) => {
+    sessionStorage.setItem("authenticatedUser", username);
+    sessionStorage.setItem("role", role);
 }
+
+export const isAdminUser = () => {
+
+    let role = sessionStorage.getItem("role");
+
+    if(role != null && role === 'ROLE_ADMIN'){
+        return true;
+    }
+    else{
+        return false;
+    }
+
+} 
 
 export const saveEmailUser = (email) => {
     sessionStorage.setItem("email", email)
