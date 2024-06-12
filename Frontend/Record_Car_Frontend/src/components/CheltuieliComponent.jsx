@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/cheltuieli.css';
 import { getAllMasini } from '../service/MasinaService';
-import { addCheltuiala, getTaxaById, updateCheltuiala } from '../service/CheltuieliService';
+import { addCheltuiala, getFileByCheltuialaId, getTaxaById, updateCheltuiala } from '../service/CheltuieliService';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const CheltuieliComponent = () => {
@@ -16,6 +16,9 @@ const CheltuieliComponent = () => {
   const [suma, setSuma] = useState('');
   const [tip, setTip] = useState('');
   const [idCategorieCheltuieli, setIdCategorie] = useState('');
+  const [files, setFiles] = useState([]);
+  const [existingFiles, setExistingFiles] = useState([]);
+  const [updateFiles, setUpdateFiles] = useState(false);
 
   const navigate = useNavigate();
 
@@ -31,19 +34,24 @@ const CheltuieliComponent = () => {
     };
 
     if(id){
-
       getTaxaById(id).then((response)=> {
         console.log(response.data)
-        setData(response.data.data)
-        setDataExpirare(response.data.dataExpirare)
-        setNumarInmatriculare(response.data.numarInmatriculare)
-        setSuma(response.data.suma)
-        setTip(response.data.tip)
-        setIdCategorie(response.data.idCategorieCheltuieli)
+        setData(response.data.data || '');
+        setDataExpirare(response.data.dataExpirare || '');
+        setNumarInmatriculare(response.data.numarInmatriculare || '');
+        setSuma(response.data.suma || '');
+        setTip(response.data.tip || '');
+        setIdCategorie(response.data.idCategorieCheltuieli || '');
       }).catch(error => {
         console.log(error)
       })
 
+      getFileByCheltuialaId(id).then((response)=>{
+        console.log(response.data);
+        setExistingFiles(response.data || []);
+      }).catch(error => {
+        console.log(error)
+      });
     }
 
     fetchMasini();
@@ -62,7 +70,7 @@ const CheltuieliComponent = () => {
     };
 
     if(id){
-      updateCheltuiala(id, cheltuiala).then((response)=> {
+      updateCheltuiala(id, cheltuiala, files, updateFiles).then((response)=> {
         console.log(response.data);
         navigate(`/cheltuieli/${numarInmatriculare}`);
       }).catch(error => {
@@ -70,24 +78,28 @@ const CheltuieliComponent = () => {
       });
     }
     else{
-      addCheltuiala(cheltuiala).then((response) => {
+      addCheltuiala(cheltuiala, files).then((response) => {
         console.log('Server response:', response.data);
+        console.log(files);
         navigate(`/cheltuieli/${numarInmatriculare}`);
       }).catch(error => {
         console.error('Error adding cheltuiala:', error);
       });
     }
-
-    
   };
+
+  const handleFileChange = (e) => {
+    setFiles(e.target.files);
+    setUpdateFiles(true);
+  };
+
   const handleTitle = () => {
     return id ? <h2 className="text-center mb-4">Editare Cheltuiala</h2> : <h2 className="text-center mb-4">Adăugare Cheltuiala</h2>;
-};
+  };
 
   const handleButtonName = () => {
-    return id? 'Editeaza Cheltuiala' : 'Adauga Cheltuiala';
+    return id ? 'Editeaza Cheltuiala' : 'Adauga Cheltuiala';
   }
-
 
   const validate = (fieldId) => {
     const input = document.getElementById(fieldId);
@@ -195,6 +207,31 @@ const CheltuieliComponent = () => {
                       <option value='4'>CHELTUIELI_CU_BATERIA</option>
                       <option value='5'>CHELTUIELI_CU_SERVICE</option>
                     </select>
+                  </div>
+                </div>
+                {id && (
+                  <div className="row justify-content-between text-left">
+                    <div className="col-sm-6 mb-3">
+                      <label className="form-label">Fisiere Existente</label>
+                      <ul className="list-group">
+                        {existingFiles.map((file, index) => (
+                          <li key={index} className="list-group-item">{file.fileName}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                )}
+                <div className="row justify-content-between text-left">
+                  <div className="col-sm-6 mb-3">
+                    <label className="form-label">Fisiere Noi</label>
+                    <input
+                      type="file"
+                      className="form-control"
+                      id="files"
+                      name="files"
+                      multiple
+                      onChange={handleFileChange}
+                    />
                   </div>
                 </div>
                 <div className="row justify-content-center ">

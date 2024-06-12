@@ -43,7 +43,6 @@ const Dashboard = () => {
   function fetchMarciAndTaxeData() {
     getMarciInregistrate().then((response) => {
       const marci = response.data;
-      console.log(marci)
       setMarciInreg(marci);
 
       const promises = marci.map(marca => getTaxeByMarca(marca));
@@ -52,7 +51,6 @@ const Dashboard = () => {
         .then(responses => {
           const taxeValues = responses.map(res => res.data);
           setTaxeData(taxeValues);
-          console.log(taxeValues)
         })
         .catch(error => {
           console.error(error);
@@ -66,6 +64,20 @@ const Dashboard = () => {
     height: '200px' 
   };
 
+  const colors = [
+    '#FF4A55', '#1E88E5', '#00E396', '#775DD0', '#FEB019',
+    '#FF4560', '#008FFB', '#FF5733', '#33FF57', '#3357FF',
+    '#F3FF33', '#FF33F3', '#4A4AFF', '#FF4A4A', '#4AFF4A',
+    '#FF4AFF', '#4A4A4A', '#FF9800', '#E91E63', '#9C27B0',
+    '#673AB7', '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4',
+    '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFC107',
+    '#FF5722', '#795548', '#607D8B', '#9E9E9E', '#FFEB3B',
+    '#C0CA33', '#F57C00', '#5D4037', '#546E7A', '#263238',
+    '#B0BEC5', '#F44336', '#81C784', '#AED581', '#9575CD',
+    '#BA68C8', '#FFB74D', '#A1887F', '#90A4AE', '#E57373',
+    '#7986CB', '#64B5F6'
+  ];
+
   const categoryChartData = {
     series: taxeData, 
     options: {
@@ -74,7 +86,7 @@ const Dashboard = () => {
         type: 'pie',
       },
       labels: marciInreg,
-      colors: ['#FF4A55', '#1E88E5', '#00E396', '#775DD0', '#FEB019'],
+      colors: colors.slice(0, marciInreg.length), // Assign unique colors to each brand
       responsive: [{
         breakpoint: 480,
         options: {

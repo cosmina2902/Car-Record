@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,6 +27,8 @@ public class Cheltuieli {
     @ManyToOne
     @JoinColumn(name = "id_categorie")
     private CategorieCheltuieli categorieCheltuieli;
+    @OneToMany(mappedBy = "cheltuieli", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FileUpload> fileUploads = new ArrayList<>();
 
 
 }

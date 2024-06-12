@@ -16,6 +16,8 @@ import ChartComponent from './components/ChartComponent';
 import Sidebar from './admin/components/Sidebar';
 import Dashboard from './admin/components/Dashboard';
 import Navbar from './admin/components/Navbar';
+import BenzinariiComponent from './components/BenzinariiComponent';
+import AboutUs from './components/AboutUs';
 
 function AuthenticatedRoute({ children, adminOnly = false }) {
   const isAuth = isUserLoggedIn();
@@ -41,11 +43,12 @@ function App() {
     <BrowserRouter>
       <HeaderCompnent />
       <Routes>
-        <Route path='/' element={<LoginComponent />}></Route>
+        <Route path='/' element={<AboutUs />}></Route>
         <Route path='/login' element={<LoginComponent />}></Route>
         <Route path='/register' element={<RegisterComponent />}></Route>
         <Route path='/forgot-password' element={<ForgotPassword />}></Route>
         <Route path='/reset-password' element={<ResestPasswordComponent />}></Route>
+        <Route path="/about-us" element={<AboutUs />} />
         <Route path='/home' element={
           <AuthenticatedRoute>
             <HomePageComponent />
@@ -79,6 +82,11 @@ function App() {
         <Route path='/add-cheltuieli' element={
           <AuthenticatedRoute>
             <CheltuieliComponent />
+          </AuthenticatedRoute>
+        }></Route>
+        <Route path='/benzinarii' element={
+          <AuthenticatedRoute>
+            <BenzinariiComponent />
           </AuthenticatedRoute>
         }></Route>
         <Route path='/edit-cheltuiala/:id' element={

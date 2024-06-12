@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import '../css/masina.css';
 import defaultImage from '../images/nodata.jpg'; // Import default image
 import { deleteMasina, getImagineMasina, getMasinaById } from '../service/MasinaService';
+import { height, width } from '@fortawesome/free-solid-svg-icons/fa0';
 
 export const MasinaComponent = () => {
     const { id } = useParams();

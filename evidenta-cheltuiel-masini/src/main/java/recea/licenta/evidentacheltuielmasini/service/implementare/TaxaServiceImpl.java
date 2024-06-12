@@ -4,18 +4,16 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import recea.licenta.evidentacheltuielmasini.dto.FileUploadDto;
 import recea.licenta.evidentacheltuielmasini.dto.TaxeDto;
-import recea.licenta.evidentacheltuielmasini.enitity.CategorieCheltuieli;
-import recea.licenta.evidentacheltuielmasini.enitity.Cheltuieli;
-import recea.licenta.evidentacheltuielmasini.enitity.Masina;
-import recea.licenta.evidentacheltuielmasini.enitity.Taxe;
+import recea.licenta.evidentacheltuielmasini.enitity.*;
 import recea.licenta.evidentacheltuielmasini.exception.ResourceNotFound;
-import recea.licenta.evidentacheltuielmasini.repository.CategorieCheltuieliRepository;
-import recea.licenta.evidentacheltuielmasini.repository.CheltuieliRepository;
-import recea.licenta.evidentacheltuielmasini.repository.MasinaRepository;
-import recea.licenta.evidentacheltuielmasini.repository.TaxaRepository;
+import recea.licenta.evidentacheltuielmasini.repository.*;
+import recea.licenta.evidentacheltuielmasini.service.FileUploadService;
 import recea.licenta.evidentacheltuielmasini.service.TaxaService;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
@@ -33,12 +31,15 @@ public class TaxaServiceImpl implements TaxaService {
 
     private MasinaRepository masinaRepository;
 
+    private FileUploadService fileUploadService;
+
+    private FileUploadRepository fileUploadRepository;
+
     private CategorieCheltuieliRepository categorieCheltuieliRepository;
     @Transactional
     @Override
-    public TaxeDto adaugareTaxa(TaxeDto taxeDto) {
+    public TaxeDto adaugareTaxa(TaxeDto taxeDto, MultipartFile[] files) throws IOException {
         Taxe taxa = modelMapper.map(taxeDto, Taxe.class);
-
         Taxe salvareTaxa = taxaRepository.save(taxa);
 
         Masina masina = masinaRepository.findByNumarInmatriculare(taxeDto.getNumarInmatriculare());
@@ -46,13 +47,17 @@ public class TaxaServiceImpl implements TaxaService {
         Cheltuieli cheltuieli = new Cheltuieli();
         cheltuieli.setMasina(masina);
         cheltuieli.setCategorieCheltuieli(salvareTaxa.getCategorieCheltuieli());
-
-
         cheltuieliRepository.save(cheltuieli);
 
-        TaxeDto salvareTaxaDto = modelMapper.map(salvareTaxa, TaxeDto.class);
+        if (files != null) {
+            for (MultipartFile file : files) {
+                if (!file.isEmpty()) {
+                    fileUploadService.adaugareFisiere(file, cheltuieli);
+                }
+            }
+        }
 
-        return salvareTaxaDto;
+        return modelMapper.map(salvareTaxa, TaxeDto.class);
     }
 
     @Override
@@ -69,11 +74,22 @@ public class TaxaServiceImpl implements TaxaService {
         return modelMapper.map(taxe, TaxeDto.class);
 
     }
-
     @Override
-    public TaxeDto updateTaxa(Long id, TaxeDto taxeDto) {
+    public List<FileUploadDto> getFileUploadByIdCheltuieli(Long id) {
+        Cheltuieli cheltuieli = cheltuieliRepository.findById(id-7)
+                .orElseThrow(() -> new ResourceNotFound("Cheltuiala cu id-ul " + id + " nu a fost gasita"));
+        List<FileUpload> existingFiles = fileUploadRepository.findByCheltuieli(cheltuieli);
+
+        return existingFiles.stream().map(fileUpload -> modelMapper.map(fileUpload, FileUploadDto.class)).collect(Collectors.toList());
+
+    }
+
+    @Transactional
+    @Override
+    public TaxeDto updateTaxa(Long id, TaxeDto taxeDto, MultipartFile[] files, boolean updateFiles) throws IOException {
         Taxe taxe = taxaRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFound("Taxa cu id-ul "+ id + " nu a fost gsita"));
+                .orElseThrow(() -> new ResourceNotFound("Taxa cu id-ul " + id + " nu a fost gasita"));
+
         taxe.setData(taxeDto.getData());
         taxe.setDataExpirare(taxeDto.getDataExpirare());
         taxe.setImagini(taxeDto.getImagini());
@@ -82,20 +98,53 @@ public class TaxaServiceImpl implements TaxaService {
         taxe.setNumarInmatriculare(taxeDto.getNumarInmatriculare());
 
         CategorieCheltuieli categorieCheltuieli = categorieCheltuieliRepository.findById(taxeDto.getIdCategorieCheltuieli())
-                .orElseThrow(() -> new ResourceNotFound("Categoria de cheltuieli cu id-ul " + taxeDto.getIdCategorieCheltuieli() + " nu a fost gsita"));
+                .orElseThrow(() -> new ResourceNotFound("Categoria de cheltuieli cu id-ul " + taxeDto.getIdCategorieCheltuieli() + " nu a fost gasita"));
 
         taxe.setCategorieCheltuieli(categorieCheltuieli);
 
         Taxe modificareTaxa = taxaRepository.save(taxe);
-        return modelMapper.map(modificareTaxa, TaxeDto.class);
 
+        Cheltuieli cheltuieli = cheltuieliRepository.findById(id-7)
+                .orElseThrow(() -> new ResourceNotFound("Cheltuiala cu id-ul " + id + " nu a fost gasita"));
+
+        if (updateFiles) {
+            // Șterge fișierele vechi asociate cu cheltuiala
+            List<FileUpload> existingFiles = fileUploadRepository.findByCheltuieli(cheltuieli);
+            for (FileUpload file : existingFiles) {
+                fileUploadService.deleteFile(file.getId());
+            }
+
+            if (files != null && files.length > 0) {
+                for (MultipartFile file : files) {
+                    if (!file.isEmpty()) {
+                        fileUploadService.adaugareFisiere(file, cheltuieli);
+                    }
+                }
+            }
+        }
+
+        return modelMapper.map(modificareTaxa, TaxeDto.class);
     }
+
 
     @Override
     public String stergereTaxa(Long id) {
+        Cheltuieli cheltuieli = cheltuieliRepository.findById(id-7)
+                .orElseThrow(() -> new ResourceNotFound("Cheltuiala cu id-ul " + id + " nu a fost gasita"));
+        List<FileUpload> existingFiles = fileUploadRepository.findByCheltuieli(cheltuieli);
+        existingFiles.forEach(fileUpload -> {
+            try {
+                fileUploadService.deleteFile(fileUpload.getId());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         Taxe taxe = taxaRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFound("Taxa cu id-ul "+ id + " nu a fost gsita"));
         taxaRepository.delete(taxe);
+
+
         String message = "Taxa cu id-ul " + id + " a fost stearsa cu succes";
 
         return message;
@@ -187,6 +236,8 @@ public class TaxaServiceImpl implements TaxaService {
         LocalDate notificationDate = today.plusDays(daysInAdvance);
         return taxaRepository.findByDataExpirareBetween(today, notificationDate);
     }
+
+
 
 
 }

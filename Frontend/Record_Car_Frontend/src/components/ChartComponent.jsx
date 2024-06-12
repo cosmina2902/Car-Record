@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { Card } from 'react-bootstrap';
+
+
 import { useParams } from 'react-router-dom';
 import { getCheltuieliAnLuna, getCheltuieliCategorie, getCheltuieliStartEndDate } from '../service/CheltuieliService';
 import ReactApexChart from 'react-apexcharts';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 
@@ -437,17 +439,21 @@ const ChartComponent = () => {
       </div>
       <br />
       <div className="container mt-4 mb-4">
-        <div className="col-12">
-          <div className='d-flex justify-content-end align-items-end mb-3'>
-            <select className="form-select w-auto" aria-label="Alegeti anul" value={an} onChange={handleYearChange}>
-              <option value="2022">2022</option>
-              <option value="2023">2023</option>
-              <option value="2024">2024</option>
-            </select>
-          </div>
-          <h2 style={{ textAlign: 'center', fontSize: '20px' }}>Cheltuieli Totale pe anul {an}</h2>
-          <ReactApexChart options={chartData.options} series={chartData.series} type="bar" height={400} />
-        </div>
+        <Card>
+          <Card.Header>
+            <div className='d-flex justify-content-end align-items-center'>
+              <select className="form-select " aria-label="Alegeti anul" value={an} onChange={handleYearChange}>
+                <option value="2022">2022</option>
+                <option value="2023">2023</option>
+                <option value="2024">2024</option>
+              </select>
+            </div>
+          </Card.Header>
+          <Card.Body>
+            <Card.Title>Cheltuieli Totale pe anul {an}</Card.Title>
+            <ReactApexChart options={chartData.options} series={chartData.series} type="bar" height={400} />
+          </Card.Body>
+        </Card>
       </div>
       <br />
       <div className="container-fluid mt-4">
@@ -474,36 +480,40 @@ const ChartComponent = () => {
 
 
       <div className="container mt-4 mb-4">
-        <div className="col-12">
-        <div className="row justify-content-end">
-            <div className="col-4">
-              <label className="form-label">Start Date</label>
-              <input
-                type="date"
-                className="form-control"
-                id="start_date"
-                name="start_date"
-                value={startDate}
-                onChange={handleStartDateChange}
-              />
+        <Card>
+          <Card.Header>
+            <div className="row justify-content-end">
+              <div className="col-4">
+                <label className="form-label">Start Date</label>
+                <input
+                  type="date"
+                  className="form-control"
+                  id="start_date"
+                  name="start_date"
+                  value={startDate}
+                  onChange={handleStartDateChange}
+                />
+              </div>
+              <div className='col-4'>
+                <label className="form-label">End Date</label>
+                <input
+                  type="date"
+                  className="form-control"
+                  id="end_date"
+                  name="end_date"
+                  value={endDate}
+                  onChange={handleEndDateChange}
+                />
+              </div>
             </div>
-            <div className='col-4'>
-              <label className="form-label">End Date</label>
-              <input
-                type="date"
-                className="form-control"
-                id="end_date"
-                name="end_date"
-                value={endDate}
-                onChange={handleEndDateChange}
-              />
-            </div>
-          </div>
-          <br/>
-          <h2 style={{ textAlign: 'center', fontSize: '20px' }}>Cheltuieli Totale</h2>
-          <ReactApexChart options={barChartData.options} series={barChartData.series} type="bar" height={400} />
-        </div>
+          </Card.Header>
+          <Card.Body>
+            <Card.Title style={{ textAlign: 'center', fontSize: '20px' }}>Cheltuieli Totale</Card.Title>
+            <ReactApexChart options={barChartData.options} series={barChartData.series} type="bar" height={400} />
+          </Card.Body>
+        </Card>
       </div>
+
     </>
   );
 };

@@ -6,17 +6,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import recea.licenta.evidentacheltuielmasini.dto.FileUploadDto;
 import recea.licenta.evidentacheltuielmasini.dto.MasinaDto;
 import recea.licenta.evidentacheltuielmasini.dto.TaxeDto;
 import recea.licenta.evidentacheltuielmasini.enitity.Masina;
 import recea.licenta.evidentacheltuielmasini.enitity.Taxe;
 import recea.licenta.evidentacheltuielmasini.enitity.User;
 import recea.licenta.evidentacheltuielmasini.exception.MasiniApiException;
+import recea.licenta.evidentacheltuielmasini.repository.FileUploadRepository;
 import recea.licenta.evidentacheltuielmasini.repository.UserRepository;
 import recea.licenta.evidentacheltuielmasini.service.MasinaService;
 import recea.licenta.evidentacheltuielmasini.service.TaxaService;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
@@ -30,9 +34,11 @@ public class TaxaController {
     private TaxaService taxaService;
     private MasinaService masinaService;
     private UserRepository userRepository;
+    private FileUploadRepository fileUploadRepository;
 
     @PostMapping
-    public ResponseEntity<TaxeDto> adaugareTaxa(@RequestBody TaxeDto taxeDto) {
+    public ResponseEntity<TaxeDto> adaugareTaxa(@ModelAttribute TaxeDto taxeDto,
+                                                @RequestParam(value = "file", required = false) MultipartFile[] file) {
         User user = getCurrentUser();
         MasinaDto masinaDto = masinaService.numarInmatriculare(taxeDto.getNumarInmatriculare());
         if (masinaDto == null || !masinaDto.getIdUser().equals(user.getId())) {
@@ -41,8 +47,12 @@ public class TaxaController {
         }
         taxeDto.setNumarInmatriculare(masinaDto.getNumarInmatriculare());
 
-        TaxeDto salvareTaxa = taxaService.adaugareTaxa(taxeDto);
-        return new ResponseEntity<>(salvareTaxa, HttpStatus.CREATED);
+        try {
+            TaxeDto salvareTaxa = taxaService.adaugareTaxa(taxeDto, file);
+            return new ResponseEntity<>(salvareTaxa, HttpStatus.CREATED);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @GetMapping
@@ -58,13 +68,32 @@ public class TaxaController {
         TaxeDto taxa = taxaService.getTaxaDupaId(id);
         return ResponseEntity.ok(taxa);
     }
+    @GetMapping("/file/{id}")
+    public ResponseEntity<List<FileUploadDto>> getFileByIdCheltuiala(@PathVariable Long id) {
+        verificareMasinaUser(id);
+        List<FileUploadDto> fileUploadDtos = taxaService.getFileUploadByIdCheltuieli(id);
+        return ResponseEntity.ok(fileUploadDtos);
+    }
 
     @PutMapping("/taxa/{id}")
-    public ResponseEntity<TaxeDto> updateTaxa(@PathVariable Long id, @RequestBody TaxeDto taxeDto) {
-        verificareMasinaUser(id);
+    public ResponseEntity<TaxeDto> updateTaxa(@PathVariable Long id, @ModelAttribute TaxeDto taxeDto,
+                                              @RequestParam(value = "files", required = false) MultipartFile[] files,
+                                              @RequestParam(value = "updateFiles", required = false,
+                                                      defaultValue = "false") boolean updateFiles) {
+        User user = getCurrentUser();
+        MasinaDto masinaDto = masinaService.numarInmatriculare(taxeDto.getNumarInmatriculare());
+        if (masinaDto == null || !masinaDto.getIdUser().equals(user.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Nu aveți permisiunea să actualizați taxe pentru această mașină.");
+        }
+        taxeDto.setNumarInmatriculare(masinaDto.getNumarInmatriculare());
 
-        TaxeDto taxaActualizata = taxaService.updateTaxa(id, taxeDto);
-        return ResponseEntity.ok(taxaActualizata);
+        try {
+            TaxeDto updateTaxa = taxaService.updateTaxa(id, taxeDto, files, updateFiles);
+            return new ResponseEntity<>(updateTaxa, HttpStatus.OK);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
 

@@ -8,7 +8,7 @@ import { Button } from 'primereact/button';
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
 import classNames from 'classnames';
 import { useNavigate, useParams } from 'react-router-dom';
-import { deleteCheltuiala, getCheltuieliMasina } from '../service/CheltuieliService';
+import { deleteCheltuiala, downloadFisiere, getCheltuieliMasina, getFileByCheltuialaId } from '../service/CheltuieliService';
 
 export default function ListCheltuieliComponent() {
 
@@ -82,7 +82,7 @@ export default function ListCheltuieliComponent() {
             })
         }
         
-       window.location.reload();
+        window.location.reload();
 
     };
 
@@ -91,10 +91,34 @@ export default function ListCheltuieliComponent() {
 
         navigator(`/edit-cheltuiala/${rowData.idTaxa}`)
     };
+    
+    const handleDownload = (rowData) => {
+        console.log('Download:', rowData.idTaxa);
+      
+        downloadFisiere(rowData.idTaxa).then((response) => {
+          if (response.status === 204) {
+            alert('Cheltuiala nu are documente adaugate');
+            return;
+          }
+      
+          console.log('File downloaded successfully');
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', `cheltuiala-${rowData.idTaxa}.zip`);
+          document.body.appendChild(link);
+          link.click();
+          link.parentNode.removeChild(link);
+        }).catch(error => {
+          console.error('Error downloading file:', error);
+        });
+      };
+    
 
     const actionBodyTemplate = (rowData) => {
         return (
             <div className="actions">
+                <Button icon="pi pi-download" className="p-button-rounded p-button-text p-mr-2 custom-button" onClick={() => handleDownload(rowData)} />
                 <Button icon="pi pi-pencil" className="p-button-rounded p-button-text p-mr-2 custom-button" onClick={() => handleEdit(rowData)} />
                 <Button icon="pi pi-trash" className="p-button-rounded p-button-text custom-button" onClick={() => handleDelete(rowData)} />
             </div>

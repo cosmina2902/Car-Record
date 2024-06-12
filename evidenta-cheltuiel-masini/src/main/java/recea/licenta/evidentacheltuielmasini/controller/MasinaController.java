@@ -167,7 +167,7 @@ public class MasinaController {
 
     private User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByUsername(username)
+        return userRepository.findByUsernameOrEmail(username, username)
                 .orElseThrow(() -> new MasiniApiException(HttpStatus.NOT_FOUND, "Username-ul nu a fost gasit"));
     }
 
