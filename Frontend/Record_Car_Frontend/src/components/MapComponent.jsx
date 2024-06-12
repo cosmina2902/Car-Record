@@ -27,7 +27,7 @@ const MapComponent = ({ oras }) => {
     }, [oras]);
 
     return (
-        <LoadScript googleMapsApiKey="AIzaSyDhnG11E_hWe1Gx5OP0Th0hYQUr2Uf6oyA">
+        <LoadScript googleMapsApiKey="my-key">
             <MapContainer>
                 <GoogleMap
                     mapContainerStyle={{width: '100%', height: '100%'}}
