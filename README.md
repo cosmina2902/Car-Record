@@ -1,4 +1,4 @@
-# [Car-Record](https://github.com/cosmina2902/Record-Car-Expenses-) 
+# [Car-Record](https://github.com/cosmina2902/Car-Record)
 Aplicație web pentru administrarea costurilor de întreținere a mașinilor 
 
  <h1 align="center">Cum sa rulezi Car Record</h2
